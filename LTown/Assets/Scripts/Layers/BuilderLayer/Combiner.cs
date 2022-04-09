@@ -78,20 +78,22 @@ namespace BuilderLayer
     {
         foreach (var vertex in _lSystemAssembler.GetTurtle.GetRoadBlueprint.GetVertexes())
         {
-            string test = vertex.ToString() + "(" + vertex.Key.GetContent.X + ", " + vertex.Key.GetContent.Z + ")" + ": ";
+            string test = vertex.Key.ToString() + "(" + vertex.Key.GetContent.X + ", " + vertex.Key.GetContent.Z + ")" + ": ";
             foreach (var edge in _lSystemAssembler.GetTurtle.GetRoadBlueprint.GetVertexEdges(vertex.Key))
             {
                 test += edge.ToString() + ", ";
             }
-        Debug.Log(test);
+            
+            Debug.Log(test);
         }
     }
 
-    void GameObjectGraphTest()
+    private void GameObjectGraphTest()
     {
         foreach (var vertex in _roadSystemConverter.convertedGraph.GetVertexes())
         {
-            string test = vertex.ToString() + "(" + vertex.Key.GetContent.transform.position.x + ", " + vertex.Key.GetContent.transform.position.z + ")" + ": ";
+            var position = vertex.Key.GetContent.transform.position;
+            string test = vertex.Key.ToString() + "(" + position.x + ", " + position.z + ")" + ": ";
             foreach (var edge in _roadSystemConverter.convertedGraph.GetVertexEdges(vertex.Key))
             {
                 test += edge.ToString() + ", ";

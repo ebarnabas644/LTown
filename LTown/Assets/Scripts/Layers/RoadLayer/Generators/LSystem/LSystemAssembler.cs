@@ -17,7 +17,7 @@ namespace RoadLayer.Generators
 
         public Turtle GetTurtle => worker;
 
-        public void RunLsystem(int iterate)
+        private void RunLsystem(int iterate)
         {
             for (int i = 0; i < iterate; i++)
             {
