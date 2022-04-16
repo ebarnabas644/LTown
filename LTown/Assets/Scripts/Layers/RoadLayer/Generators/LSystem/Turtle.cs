@@ -99,7 +99,7 @@ namespace RoadLayer.Generators
             Unit newUnit = new Unit(newX, 0, newZ, newAngle);
             this.currentUnit = new Node<Unit>(newUnit);
             Node<Unit> snappedNode = this.SnapToIntersection(this.currentUnit);
-            if (snappedNode == this.currentUnit)
+            if (snappedNode.Equals(this.currentUnit))
             {
                 this.roadBlueprint.AddVertex(currentUnit);
             }
