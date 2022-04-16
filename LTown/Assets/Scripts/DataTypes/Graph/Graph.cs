@@ -36,6 +36,11 @@
             return false;
         }
 
+        public void AddGraph(Graph<T> toAdd)
+        {
+            toAdd.GetVertexes().ToList().ForEach(x => this.vertexes.Add(x.Key, x.Value));
+        }
+
         public bool RemoveEdge(Node<T> v, Node<T> u, Edge<T> edge)
         {
             if (VertexExists(v) && VertexExists(u))
