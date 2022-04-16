@@ -4,17 +4,28 @@ namespace DataTypes
 {
     public class Unit
     {
-        public float X { get; set; }
-        public float Y { get; set; }
-        public float Z { get; set; }
+        public Vec3 Position { get; set; }
         public float Angle { get; set; }
 
         public Unit(float x, float y, float z, float angle)
         {
-            this.X = x;
-            this.Y = y;
-            this.Z = z;
+            this.Position = new Vec3(x, y, z);
             this.Angle = angle;
+        }
+
+        public float X
+        {
+            get => Position.X;
+        }
+
+        public float Y
+        {
+            get => Position.Y;
+        }
+
+        public float Z
+        {
+            get => Position.Z;
         }
 
         public override bool Equals(object obj)
@@ -26,7 +37,7 @@ namespace DataTypes
             else
             {
                 Unit unit = (Unit)obj;
-                if (unit.Angle == this.Angle && unit.X == this.X && unit.Y == this.Y && unit.Z == this.Z)
+                if (unit.Angle == this.Angle && unit.Position.X == this.X && unit.Position.Y == this.Y && unit.Position.Z == this.Z)
                 {
                     return true;
                 }
@@ -37,7 +48,7 @@ namespace DataTypes
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(this.X, this.Y, this.Z, this.Angle);
+            return HashCode.Combine(this.Position.X, this.Position.Y, this.Position.Z, this.Angle);
         }
     }
 }
