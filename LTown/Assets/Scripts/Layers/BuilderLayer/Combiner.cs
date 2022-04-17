@@ -1,7 +1,13 @@
-﻿using ConvertLayer;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using ConvertLayer;
 using DataTypes;
+using DataTypes.Map;
 using RoadLayer.Generators;
 using UnityEngine;
+using Debug = UnityEngine.Debug;
+using Random = UnityEngine.Random;
 
 namespace BuilderLayer
 {
@@ -36,22 +42,36 @@ namespace BuilderLayer
     void Start()
     {
         CallBuilder();
-
-        Debug.Log("Unit graph: ");
-        GraphTest();
-        Debug.Log("Gameobject graph: ");
-        GameObjectGraphTest();
+        
+        //GraphTest();
+        //GameObjectGraphTest();
+        ChunkColorizer();
+        //MapTester();
     }
 
     void CallBuilder()
     {
         Unit startPoint = new Unit(start.transform.position.x, start.transform.position.y, start.transform.position.z, start.transform.rotation.eulerAngles.y);
         LSystemConfigurator();
+        Stopwatch test = new Stopwatch();
         _lSystemAssembler = new LSystemAssembler(_lSystem, startPoint);
         TurtleConfigurator();
+        
+        test.Start();
         _lSystemAssembler.Draw(numberOfIterations);
+        test.Stop();
+        Debug.Log("Graph generation time: "+test.Elapsed.ToString(@"m\:ss\.ff"));
+        test.Reset();
+
         _roadSystemConverter = new RoadSystemConverter(roadBuilder.GetComponent<RoadBuilder>());
-        _roadSystemConverter.ConvertUnitGraphToGameObjectGraph(_lSystemAssembler.GenerateGraph());
+        Map<Unit> unitMap = _lSystemAssembler.GenerateGraph();
+
+        test.Start();
+        _roadSystemConverter.ConvertUnitGraphToGameObjectGraph(unitMap);
+        test.Stop();
+        Debug.Log("Gameobject conversion time: "+test.Elapsed.ToString(@"m\:ss\.ff"));
+        test.Reset();
+        
         Debug.Log(_lSystem.GetAxiom);
     }
 
@@ -74,11 +94,12 @@ namespace BuilderLayer
         _lSystemAssembler.GetTurtle.randomMultiplier = this.randomMultiplier;
     }
     
-    void GraphTest()
+    private void GraphTest()
     {
+        Debug.Log("Unit graph: ");
         foreach (var vertex in _lSystemAssembler.GetTurtle.GetRoadBlueprint.GetVertexes())
         {
-            string test = vertex.Key.ToString() + "(" + vertex.Key.GetContent.X + ", " + vertex.Key.GetContent.Z + ")" + ": ";
+            string test = vertex.Key + "(" + vertex.Key.GetContent.X + ", " + vertex.Key.GetContent.Z + ")" + ": ";
             foreach (var edge in _lSystemAssembler.GetTurtle.GetRoadBlueprint.GetVertexEdges(vertex.Key))
             {
                 test += edge.ToString() + ", ";
@@ -90,16 +111,27 @@ namespace BuilderLayer
 
     private void GameObjectGraphTest()
     {
+        Debug.Log("Gameobject graph: ");
         foreach (var vertex in _roadSystemConverter.convertedGraph.GetVertexes())
         {
-            var position = vertex.Key.GetContent.transform.position;
-            string test = vertex.Key.ToString() + "(" + position.x + ", " + position.z + ")" + ": ";
+            var position = vertex.Key.GetContent.GetGameObject().transform.position;
+            string test = vertex.Key + "(" + position.x + ", " + position.z + ")" + ": ";
             foreach (var edge in _roadSystemConverter.convertedGraph.GetVertexEdges(vertex.Key))
             {
-                test += edge.ToString() + ", ";
+                test += edge + ", ";
             }
             Debug.Log(test);
         }
+        
+        Debug.Log("Number of chunks: "+_roadSystemConverter.convertedGraph.NumberOfChunks());
+    }
+
+    private void MapTester()
+    {
+        Map<Unit> testMap = new Map<Unit>();
+        testMap.CreateChunk(new Vec3(0, 0, 0));
+        testMap.CreateChunk(new Vec3(20, 0, 0));
+        Debug.Log("Number of chunks: "+testMap.NumberOfChunks());
     }
 }
 }
