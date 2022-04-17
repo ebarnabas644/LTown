@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using DataTypes;
 using DataTypes.Graph;
 using DataTypes.Graph.Assets.Scripts.Graph;
+using DataTypes.Map;
+using Random = System.Random;
 
 namespace RoadLayer.Generators
 {
@@ -18,7 +20,7 @@ namespace RoadLayer.Generators
         private float lineLenght;
         private float angleInc;
         private Stack<SavedUnit> transforms;
-        private Graph<Unit> roadBlueprint;
+        private Map<Unit> roadBlueprint;
         public float randomAngle { get; set; }
         public int randomMultiplier { get; set; }
         public float SnapRange { get; set; }
@@ -35,7 +37,7 @@ namespace RoadLayer.Generators
             this.roadMaxLenght = 10;
             this.intersectionRoadNumber = 4;
             this.transforms = new Stack<SavedUnit>();
-            this.roadBlueprint = new Graph<Unit>();
+            this.roadBlueprint = new Map<Unit>();
             this.previousUnit = this.currentUnit;
             this.roadBlueprint.AddVertex(this.previousUnit);
         }
@@ -80,7 +82,7 @@ namespace RoadLayer.Generators
             }
         }
 
-        public Graph<Unit> GetRoadBlueprint
+        public Map<Unit> GetRoadBlueprint
         {
             get
             {
@@ -98,7 +100,7 @@ namespace RoadLayer.Generators
             float newZ = (float)(GetZ + Math.Cos(radian) * GetLineLenght);
             Unit newUnit = new Unit(newX, 0, newZ, newAngle);
             this.currentUnit = new Node<Unit>(newUnit);
-            Node<Unit> snappedNode = this.SnapToIntersection(this.currentUnit);
+            Node<Unit> snappedNode = this.CheckSnap(this.currentUnit);
             if (snappedNode.Equals(this.currentUnit))
             {
                 this.roadBlueprint.AddVertex(currentUnit);
@@ -115,11 +117,37 @@ namespace RoadLayer.Generators
             this.previousUnit = currentUnit;
         }
 
-        private Node<Unit> SnapToIntersection(Node<Unit> nodeToCheck)
+        private Node<Unit> CheckSnap(Node<Unit> vertex)
+        {
+            Vec3 vertexPos = vertex.GetContent.Position;
+            int chuckSize = this.roadBlueprint.ChunkSize;
+            Node<Unit> snappedNode;
+            if (CheckIfNearChunkBorder(vertex))
+            {
+                snappedNode = SnapToIntersection(vertex, this.roadBlueprint.CombineRange);
+            }
+            else
+            {
+                snappedNode = SnapToIntersection(vertex, 0);
+            }
+
+            return snappedNode;
+        }
+
+        private bool CheckIfNearChunkBorder(Node<Unit> vertex)
+        {
+            Vec3 vertexPos = vertex.GetContent.Position;
+            int chuckSize = this.roadBlueprint.ChunkSize;
+            return vertexPos.X % chuckSize < SnapRange || vertexPos.Z % chuckSize < SnapRange ||
+                   vertexPos.X % chuckSize > (chuckSize - SnapRange) ||
+                   vertexPos.Z % chuckSize > (chuckSize - SnapRange);
+        }
+
+        private Node<Unit> SnapToIntersection(Node<Unit> nodeToCheck, int range)
         {
             float minDistance = Int32.MaxValue;
             Node<Unit> closestToTarget = nodeToCheck;
-            foreach (var vertex in this.roadBlueprint.GetVertexes())
+            foreach (var vertex in this.roadBlueprint.GetVertexesInRange(nodeToCheck, range))
             {
                 float distance = CalculateNodeDistance(nodeToCheck, vertex.Key);
                 if (distance < minDistance)
