@@ -37,5 +37,10 @@ namespace DataTypes
                    Math.Abs(this.Y - other.Y) < Tolerance &&
                    Math.Abs(this.Z - other.Z) < Tolerance;
         }
+
+        public override string ToString()
+        {
+            return "Position: "+ this.X + "," + this.Y + "," + this.Z;
+        }
     }
 }
