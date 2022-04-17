@@ -1,6 +1,9 @@
-﻿namespace DataTypes.Graph
+﻿using System;
+using DataTypes.Map;
+
+namespace DataTypes.Graph
 {
-    public class Node<T>
+    public class Node<T> where T : ILocatable
     {
         private static int counter = 0;
         private int _id;
@@ -30,7 +33,7 @@
 
         public override int GetHashCode()
         {
-            return _id;
+            return HashCode.Combine(this._node.GetPosition().X, this._node.GetPosition().Y, this._node.GetPosition().Z);
         }
 
         public override bool Equals(object obj)

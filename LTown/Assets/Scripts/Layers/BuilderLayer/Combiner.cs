@@ -109,6 +109,30 @@ namespace BuilderLayer
         }
     }
 
+    private void ChunkColorizer()
+    {
+        Dictionary<Vec3, Color> colorPalette = new Dictionary<Vec3, Color>();
+        Map<CityObject> map = _roadSystemConverter.convertedGraph;
+        foreach (var chunk in map.GetChunks())
+        {
+            colorPalette.Add(chunk.Key, Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f));
+        }
+        foreach (var vertex in map.GetVertexes())
+        {
+            GameObject vertexGo = vertex.Key.GetContent.GetGameObject().transform.Find("Intersection").gameObject;
+            Renderer vertexRenderer = vertexGo.GetComponent<Renderer>();
+            vertexRenderer.material.color =
+                colorPalette[map.ConvertPositionToChunkPosition(vertex.Key.GetContent.GetPosition())];
+            foreach (var road in vertex.Value)
+            {
+                GameObject roadGo = road.Content.GetGameObject().transform.Find("Road").gameObject;
+                Renderer roadRenderer = roadGo.GetComponent<Renderer>();
+                roadRenderer.material.color =
+                    colorPalette[map.ConvertPositionToChunkPosition(road.Start.GetContent.GetPosition())] * 0.5f;
+            }
+        }
+    }
+
     private void GameObjectGraphTest()
     {
         Debug.Log("Gameobject graph: ");

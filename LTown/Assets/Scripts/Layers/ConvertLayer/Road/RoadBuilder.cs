@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using DataTypes;
 using DataTypes.Graph;
+using DataTypes.Map;
 using UnityEngine;
 
 namespace ConvertLayer
@@ -18,7 +19,7 @@ namespace ConvertLayer
             roadTypes = new List<GameObject>();
         }
 
-        public GameObject BuildRoad(Edge<Unit> edge, int id)
+        public CityObject BuildRoad(Edge<Unit> edge, int id)
         {
             GameObject roadBlock = Instantiate(roadTypes[id]);
             Vector3 position = new Vector3(edge.Start.GetContent.X, edge.Start.GetContent.Y, edge.Start.GetContent.Z);
@@ -29,16 +30,18 @@ namespace ConvertLayer
             float angle = (float)((180 / Math.PI) * Math.Atan2(xDistance, zDistance));
             roadBlock.transform.rotation = Quaternion.Euler(0f, angle, 0f);
             roadBlock.transform.localScale = new Vector3(1, 1, distance);
-            return roadBlock;
+            CityObject cityObject = new CityObject(roadBlock);
+            return cityObject;
         }
 
-        public GameObject BuildIntersection(Node<Unit> node, int id)
+        public CityObject BuildIntersection(Node<Unit> node, int id)
         {
             GameObject roadBlock = Instantiate(intersectionTypes[id]);
             Vector3 position = new Vector3(node.GetContent.X, node.GetContent.Y, node.GetContent.Z);
             roadBlock.transform.position = position;
             roadBlock.transform.rotation = Quaternion.Euler(0f, node.GetContent.Angle, 0f);
-            return roadBlock;
+            CityObject cityObject = new CityObject(roadBlock);
+            return cityObject;
         }
     }
 }
