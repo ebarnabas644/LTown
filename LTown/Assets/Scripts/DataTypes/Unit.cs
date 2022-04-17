@@ -1,8 +1,9 @@
 ﻿using System;
+using DataTypes.Map;
 
 namespace DataTypes
 {
-    public class Unit
+    public class Unit : ILocatable
     {
         public Vec3 Position { get; set; }
         public float Angle { get; set; }
@@ -37,7 +38,7 @@ namespace DataTypes
             else
             {
                 Unit unit = (Unit)obj;
-                if (unit.Angle == this.Angle && unit.Position.X == this.X && unit.Position.Y == this.Y && unit.Position.Z == this.Z)
+                if (unit.Angle == this.Angle && unit.Position.Equals(this.Position))
                 {
                     return true;
                 }
@@ -49,6 +50,11 @@ namespace DataTypes
         public override int GetHashCode()
         {
             return HashCode.Combine(this.Position.X, this.Position.Y, this.Position.Z, this.Angle);
+        }
+
+        public Vec3 GetPosition()
+        {
+            return this.Position;
         }
     }
 }
