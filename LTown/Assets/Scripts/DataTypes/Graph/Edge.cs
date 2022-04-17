@@ -1,6 +1,8 @@
-﻿namespace DataTypes.Graph
+﻿using DataTypes.Map;
+
+namespace DataTypes.Graph
 {
-    public class Edge<T>
+    public class Edge<T> where T : ILocatable
     {
         private static int counter = 0;
         private int id;

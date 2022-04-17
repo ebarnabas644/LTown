@@ -1,11 +1,13 @@
-﻿namespace DataTypes.Graph
+﻿using DataTypes.Map;
+
+namespace DataTypes.Graph
 {
     using System.Collections.Generic;
     using System.Linq;
 
     namespace Assets.Scripts.Graph
 {
-    public class Graph<T>
+    public class Graph<T> where T : ILocatable
     {
         private Dictionary<Node<T>, HashSet<Edge<T>>> vertexes;
 
