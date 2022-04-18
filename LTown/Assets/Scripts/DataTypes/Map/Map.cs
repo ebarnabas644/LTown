@@ -59,11 +59,11 @@ namespace DataTypes.Map
             return _chunkMap[vertexChunkPos].GetVertexEdges(vertex);
         }
 
-        public Dictionary<Node<T>, HashSet<Edge<T>>> GetVertexesInRange(Node<T> vertex, int range)
+        public List<Graph<T>> GetNeighbourChunksInRange(Node<T> vertex, int range)
         {
             Vec3 vertexChunkPos = ConvertPositionToChunkPosition(vertex.GetContent.GetPosition());
-            Graph<T> combined = CombineNeighbours(range, vertexChunkPos);
-            return combined.GetVertexes();
+            List<Graph<T>> combined = CombineNeighbours(range, vertexChunkPos);
+            return combined;
         }
 
         public Dictionary<Node<T>, HashSet<Edge<T>>> GetVertexes()
@@ -77,8 +77,9 @@ namespace DataTypes.Map
             return combined;
         }
 
-        private Graph<T> CombineNeighbours(int range, Vec3 tempChunkPos)
+        private List<Graph<T>> CombineNeighbours(int range, Vec3 tempChunkPos)
         {
+            List<Graph<T>> graphlist = new List<Graph<T>>();
             Vec3 convertedChunkPos = ConvertPositionToChunkPosition(tempChunkPos);
             if (range == 0)
             {
@@ -87,7 +88,9 @@ namespace DataTypes.Map
                     CreateChunk(convertedChunkPos);
                     Debug.Log(tempChunkPos);
                 }
-                return _chunkMap[convertedChunkPos];
+                graphlist.Add(GetChunk(convertedChunkPos));
+                //return _chunkMap[convertedChunkPos];
+                return graphlist;
             }
             
             Graph<T> combined = new Graph<T>();
@@ -97,10 +100,11 @@ namespace DataTypes.Map
                 {
                     Vec3 tempPos = new Vec3(tempChunkPos.X + (ChunkSize * x),
                         tempChunkPos.Y, tempChunkPos.Z + (ChunkSize * z));
-                    combined.AddGraph(GetChunk(tempPos));
+                    //combined.AddGraph(GetChunk(tempPos));
+                    graphlist.Add(GetChunk(tempPos));
                 }
             }
-            return combined;
+            return graphlist;
         }
 
         public Vec3 ConvertPositionToChunkPosition(Vec3 pos)

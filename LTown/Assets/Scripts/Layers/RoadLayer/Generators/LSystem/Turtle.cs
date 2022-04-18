@@ -147,13 +147,16 @@ namespace RoadLayer.Generators
         {
             float minDistance = Int32.MaxValue;
             Node<Unit> closestToTarget = nodeToCheck;
-            foreach (var vertex in this.roadBlueprint.GetVertexesInRange(nodeToCheck, range))
+            foreach (var graph in this.roadBlueprint.GetNeighbourChunksInRange(nodeToCheck, range))
             {
-                float distance = CalculateNodeDistance(nodeToCheck, vertex.Key);
-                if (distance < minDistance)
+                foreach (var vertex in graph.GetVertexes())
                 {
-                    closestToTarget = vertex.Key;
-                    minDistance = distance;
+                    float distance = CalculateNodeDistance(nodeToCheck, vertex.Key);
+                    if (distance < minDistance)
+                    {
+                        closestToTarget = vertex.Key;
+                        minDistance = distance;
+                    }
                 }
             }
 
