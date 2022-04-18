@@ -86,9 +86,7 @@ namespace DataTypes.Graph
 
         public Dictionary<Node<T>, HashSet<Edge<T>>> GetVertexes()
         {
-            Dictionary<Node<T>, HashSet<Edge<T>>> vertexesCopy = new Dictionary<Node<T>, HashSet<Edge<T>>>(vertexes);
-
-            return vertexesCopy;
+            return vertexes;
         }
 
         public bool VertexExists(Node<T> vertex)
