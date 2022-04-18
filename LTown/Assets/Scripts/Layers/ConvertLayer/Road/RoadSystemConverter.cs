@@ -33,7 +33,8 @@ namespace ConvertLayer
 
         private Node<CityObject> SearchGameObject(Node<Unit> node)
         {
-            foreach (var vertex in this.convertedGraph.GetChunk(node.GetContent.GetPosition()).GetVertexes())
+            var convertedChunk = this.convertedGraph.GetChunk(node.GetContent.GetPosition()).GetVertexes();
+            foreach (var vertex in convertedChunk)
             {
                 if (UnitEqualToGameObject(vertex.Key, node))
                 {
