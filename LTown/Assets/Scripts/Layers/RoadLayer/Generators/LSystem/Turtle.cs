@@ -121,33 +121,15 @@ namespace RoadLayer.Generators
         {
             Vec3 vertexPos = vertex.GetContent.Position;
             int chuckSize = this.roadBlueprint.ChunkSize;
-            Node<Unit> snappedNode;
-            if (CheckIfNearChunkBorder(vertex))
-            {
-                snappedNode = SnapToIntersection(vertex, this.roadBlueprint.CombineRange);
-            }
-            else
-            {
-                snappedNode = SnapToIntersection(vertex, 0);
-            }
-
+            Node<Unit> snappedNode = SnapToIntersection(vertex);
             return snappedNode;
         }
 
-        private bool CheckIfNearChunkBorder(Node<Unit> vertex)
-        {
-            Vec3 vertexPos = vertex.GetContent.Position;
-            int chuckSize = this.roadBlueprint.ChunkSize;
-            return vertexPos.X % chuckSize < SnapRange || vertexPos.Z % chuckSize < SnapRange ||
-                   vertexPos.X % chuckSize > (chuckSize - SnapRange) ||
-                   vertexPos.Z % chuckSize > (chuckSize - SnapRange);
-        }
-
-        private Node<Unit> SnapToIntersection(Node<Unit> nodeToCheck, int range)
+        private Node<Unit> SnapToIntersection(Node<Unit> nodeToCheck)
         {
             float minDistance = Int32.MaxValue;
             Node<Unit> closestToTarget = nodeToCheck;
-            foreach (var graph in this.roadBlueprint.GetNeighbourChunksInRange(nodeToCheck, range))
+            foreach (var graph in this.roadBlueprint.GetNeighbourChunksInRange(nodeToCheck, SnapRange))
             {
                 foreach (var vertex in graph.GetVertexes())
                 {

@@ -59,10 +59,10 @@ namespace DataTypes.Map
             return _chunkMap[vertexChunkPos].GetVertexEdges(vertex);
         }
 
-        public List<Graph<T>> GetNeighbourChunksInRange(Node<T> vertex, int range)
+        public List<Graph<T>> GetNeighbourChunksInRange(Node<T> vertex, float snapRange)
         {
-            Vec3 vertexChunkPos = ConvertPositionToChunkPosition(vertex.GetContent.GetPosition());
-            List<Graph<T>> combined = CombineNeighbours(range, vertexChunkPos);
+            Vec3 vertexPos = vertex.GetContent.GetPosition();
+            List<Graph<T>> combined = CombineNeighbours(vertexPos, snapRange);
             return combined;
         }
 
@@ -77,33 +77,107 @@ namespace DataTypes.Map
             return combined;
         }
 
-        private List<Graph<T>> CombineNeighbours(int range, Vec3 tempChunkPos)
+        private List<Graph<T>> CombineNeighbours(Vec3 vertexPos, float snapRange)
         {
             List<Graph<T>> graphlist = new List<Graph<T>>();
-            Vec3 convertedChunkPos = ConvertPositionToChunkPosition(tempChunkPos);
-            if (range == 0)
+            bool[] borderList = FillBorderList(vertexPos, snapRange);
+            Vec3 convertedChunkPos = ConvertPositionToChunkPosition(vertexPos);
+            if (CheckIfNearChunkBorder(borderList))
             {
-                if (!ChunkExists(convertedChunkPos))
+                if (CheckTopRight(borderList))
                 {
-                    CreateChunk(convertedChunkPos);
-                    Debug.Log(tempChunkPos);
+                    graphlist.Add(GetChunk(new Vec3(convertedChunkPos.X + ChunkSize, convertedChunkPos.Y,
+                        convertedChunkPos.Z)));
+                    graphlist.Add(GetChunk(new Vec3(convertedChunkPos.X + ChunkSize, convertedChunkPos.Y,
+                        convertedChunkPos.Z - ChunkSize)));
+                    graphlist.Add(GetChunk(new Vec3(convertedChunkPos.X, convertedChunkPos.Y,
+                        convertedChunkPos.Z - ChunkSize)));
+                }
+                else if (CheckBottomRight(borderList))
+                {
+                    graphlist.Add(GetChunk(new Vec3(convertedChunkPos.X, convertedChunkPos.Y,
+                        convertedChunkPos.Z - ChunkSize)));
+                    graphlist.Add(GetChunk(new Vec3(convertedChunkPos.X - ChunkSize, convertedChunkPos.Y,
+                        convertedChunkPos.Z - ChunkSize)));
+                    graphlist.Add(GetChunk(new Vec3(convertedChunkPos.X - ChunkSize, convertedChunkPos.Y,
+                        convertedChunkPos.Z)));
+                }
+                else if (CheckBottomLeft(borderList))
+                {
+                    graphlist.Add(GetChunk(new Vec3(convertedChunkPos.X - ChunkSize, convertedChunkPos.Y,
+                        convertedChunkPos.Z)));
+                    graphlist.Add(GetChunk(new Vec3(convertedChunkPos.X - ChunkSize, convertedChunkPos.Y,
+                        convertedChunkPos.Z + ChunkSize)));
+                    graphlist.Add(GetChunk(new Vec3(convertedChunkPos.X, convertedChunkPos.Y,
+                        convertedChunkPos.Z + ChunkSize)));
+                }
+                else if (CheckTopLeft(borderList))
+                {
+                    graphlist.Add(GetChunk(new Vec3(convertedChunkPos.X, convertedChunkPos.Y,
+                        convertedChunkPos.Z + ChunkSize)));
+                    graphlist.Add(GetChunk(new Vec3(convertedChunkPos.X + ChunkSize, convertedChunkPos.Y,
+                        convertedChunkPos.Z + ChunkSize)));
+                    graphlist.Add(GetChunk(new Vec3(convertedChunkPos.X + ChunkSize, convertedChunkPos.Y,
+                        convertedChunkPos.Z)));
+                }
+                else if (CheckTop(borderList))
+                {
+                    graphlist.Add(GetChunk(new Vec3(convertedChunkPos.X + ChunkSize, convertedChunkPos.Y,
+                        convertedChunkPos.Z)));
+                }
+                else if (CheckRight(borderList))
+                {
+                    graphlist.Add(GetChunk(new Vec3(convertedChunkPos.X, convertedChunkPos.Y,
+                        convertedChunkPos.Z - ChunkSize)));
+                }
+                else if (CheckBottom(borderList))
+                {
+                    graphlist.Add(GetChunk(new Vec3(convertedChunkPos.X - ChunkSize, convertedChunkPos.Y,
+                        convertedChunkPos.Z)));
+                }
+                else
+                {
+                    graphlist.Add(GetChunk(new Vec3(convertedChunkPos.X, convertedChunkPos.Y,
+                        convertedChunkPos.Z + ChunkSize)));
                 }
                 graphlist.Add(GetChunk(convertedChunkPos));
-                //return _chunkMap[convertedChunkPos];
-                return graphlist;
             }
-            
-            Graph<T> combined = new Graph<T>();
-            for (int z = -range; z <= range; z++)
+            else
             {
-                for (int x = -range; x <= range; x++)
-                {
-                    Vec3 tempPos = new Vec3(tempChunkPos.X + (ChunkSize * x),
-                        tempChunkPos.Y, tempChunkPos.Z + (ChunkSize * z));
-                    //combined.AddGraph(GetChunk(tempPos));
-                    graphlist.Add(GetChunk(tempPos));
-                }
+                graphlist.Add(GetChunk(convertedChunkPos));
             }
+
+            // if (!FillBorderList(tempChunkPos, snapRange))
+            // {
+            //     if (!ChunkExists(convertedChunkPos))
+            //     {
+            //         CreateChunk(convertedChunkPos);
+            //         Debug.Log(tempChunkPos);
+            //     }
+            //     graphlist.Add(GetChunk(convertedChunkPos));
+            //     //return _chunkMap[convertedChunkPos];
+            //     return graphlist;
+            // }
+            // else
+            // {
+            //     if ()
+            //     {
+            //         
+            //     }
+            // }
+            
+            // Graph<T> combined = new Graph<T>();
+            // for (int z = -1; z <= 1; z++)
+            // {
+            //     for (int x = -1; x <= 1; x++)
+            //     {
+            //         Vec3 tempPos = new Vec3(convertedChunkPos.X + (ChunkSize * x),
+            //             convertedChunkPos.Y, convertedChunkPos.Z + (ChunkSize * z));
+            //         //combined.AddGraph(GetChunk(tempPos));
+            //         graphlist.Add(GetChunk(tempPos));
+            //     }
+            // }
+
             return graphlist;
         }
 
@@ -118,12 +192,12 @@ namespace DataTypes.Map
         public Graph<T> GetChunk(Vec3 chunkPos)
         {
             Vec3 converted = ConvertPositionToChunkPosition(chunkPos);
-            if (ChunkExists(converted))
+            if (!ChunkExists(converted))
             {
-                return this._chunkMap[converted];
+                CreateChunk(converted);
             }
-
-            return new Graph<T>();
+            
+            return this._chunkMap[converted];
         }
 
         public int NumberOfChunks()
@@ -151,6 +225,72 @@ namespace DataTypes.Map
         protected bool ChunkExists(Vec3 pos)
         {
             return _chunkMap.ContainsKey(pos);
+        }
+        
+        private bool[] FillBorderList(Vec3 vertexPos, float snapRange)
+        {
+            int chuckSize = this.ChunkSize;
+            bool[] borderList = new bool[5];
+            borderList[0] = Mod((int)vertexPos.X, chuckSize) < snapRange; // bottom side
+            borderList[1] = Mod((int)vertexPos.Z, chuckSize) < snapRange; // right side
+            borderList[2] = Mod((int)vertexPos.X, chuckSize) > (chuckSize - snapRange); // top side
+            borderList[3] = Mod((int)vertexPos.Z, chuckSize) > (chuckSize - snapRange); // left side
+            if (borderList.Contains(true))
+            {
+                borderList[4] = true;
+            }
+            return borderList;
+        }
+        
+        private bool CheckTopLeft(bool[] borderList)
+        {
+            return CheckLeft(borderList) && CheckTop(borderList);
+        }
+
+        private bool CheckBottomLeft(bool[] borderList)
+        {
+            return CheckLeft(borderList) && CheckBottom(borderList);
+        }
+
+        private bool CheckTopRight(bool[] borderList)
+        {
+            return CheckRight(borderList) && CheckTop(borderList);
+        }
+
+        private bool CheckBottomRight(bool[] borderList)
+        {
+            return CheckRight(borderList) && CheckBottom(borderList);
+        }
+
+        private bool CheckTop(bool[] borderList)
+        {
+            return borderList[2];
+        }
+
+        private bool CheckRight(bool[] borderList)
+        {
+            return borderList[1];
+        }
+
+        private bool CheckBottom(bool[] borderList)
+        {
+            return borderList[0];
+        }
+
+        private bool CheckLeft(bool[] borderList)
+        {
+            return borderList[3];
+        }
+
+        private bool CheckIfNearChunkBorder(bool[] borderList)
+        {
+            return borderList[4];
+        }
+        
+        //https://stackoverflow.com/questions/1082917/mod-of-negative-number-is-melting-my-brain
+        private int Mod(int x, int m) {
+            int r = x%m;
+            return r<0 ? r+m : r;
         }
     }
 }
