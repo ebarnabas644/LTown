@@ -28,7 +28,7 @@ namespace DataTypes.Graph
 
         public bool AddEdge(Edge<T> edge)
         {
-            if (!EdgeExists(edge) && VertexExists(edge.Start) && VertexExists(edge.End))
+            if (!EdgeExists(edge) && VertexExists(edge.Start) && VertexExists(edge.End) && !edge.Start.Equals(edge.End))
             {
                 this.vertexes[edge.Start].Add(edge);
                 this.vertexes[edge.End].Add(edge);
@@ -82,6 +82,20 @@ namespace DataTypes.Graph
             }
 
             return Enumerable.Empty<Edge<T>>().ToList();
+        }
+
+        public List<Edge<T>> GetEdges()
+        {
+            HashSet<Edge<T>> edges = new HashSet<Edge<T>>();
+            foreach (var vertex in vertexes)
+            {
+                foreach (var edge in vertex.Value)
+                {
+                    edges.Add(edge);
+                }
+            }
+
+            return edges.ToList();
         }
 
         public Dictionary<Node<T>, HashSet<Edge<T>>> GetVertexes()
