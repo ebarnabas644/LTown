@@ -1,4 +1,5 @@
-﻿using DataTypes.Map;
+﻿using System;
+using DataTypes.Map;
 
 namespace DataTypes.Graph
 {
@@ -27,7 +28,7 @@ namespace DataTypes.Graph
 
         public override int GetHashCode()
         {
-            return id;
+            return HashCode.Combine(Start, End);
         }
 
         public T Content
@@ -52,13 +53,14 @@ namespace DataTypes.Graph
             else
             {
                 Edge<T> p = (Edge<T>)obj;
-                return this.Start.GetContent.Equals(p.Start.GetContent) && this.End.GetContent.Equals(p.End.GetContent);
+                return this.Start.GetContent.Equals(p.Start.GetContent) && this.End.GetContent.Equals(p.End.GetContent) ||
+                       this.Start.GetContent.Equals(p.End.GetContent) && this.End.GetContent.Equals(p.Start.GetContent);
             }
         }
 
         public override string ToString()
         {
-            return "|EdgeId: " + this.GetId + "|";
+            return "|EdgeId: " + this.GetId + "|Start: " + this.Start + "End: " + this.End;
         }
     }
 
