@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using ConvertLayer;
 using DataTypes;
 using DataTypes.Map;
+using Layers.RoadLayer.PostProcessing;
 using RoadLayer.Generators;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
@@ -38,20 +38,25 @@ namespace BuilderLayer
     [SerializeField]
     public float snapRange = 1f;
 
+    private Unit startPoint;
+
+    private RoadBuilder roadBuilderScript;
     // Start is called before the first frame update
     void Start()
     {
+        startPoint = new Unit(start.transform.position.x, start.transform.position.y, start.transform.position.z, start.transform.rotation.eulerAngles.y);
+        roadBuilderScript = roadBuilder.GetComponent<RoadBuilder>();
         CallBuilder();
-        
-        //GraphTest();
-        //GameObjectGraphTest();
         ChunkColorizer();
+        //GraphTest();
+        GameObjectGraphTest();
+        //ChunkColorizer();
         //MapTester();
+        
     }
 
     void CallBuilder()
     {
-        Unit startPoint = new Unit(start.transform.position.x, start.transform.position.y, start.transform.position.z, start.transform.rotation.eulerAngles.y);
         LSystemConfigurator();
         Stopwatch test = new Stopwatch();
         _lSystemAssembler = new LSystemAssembler(_lSystem, startPoint);
@@ -63,8 +68,15 @@ namespace BuilderLayer
         Debug.Log("Graph generation time: "+test.Elapsed.ToString(@"m\:ss\.ff"));
         test.Reset();
 
-        _roadSystemConverter = new RoadSystemConverter(roadBuilder.GetComponent<RoadBuilder>());
+        _roadSystemConverter = new RoadSystemConverter(roadBuilderScript);
         Map<Unit> unitMap = _lSystemAssembler.GenerateGraph();
+
+        test.Start();
+        IntersectionFilter<Unit> filter = new IntersectionFilter<Unit>(unitMap);
+        unitMap = filter.Filtering();
+        test.Stop();
+        Debug.Log("Filtering time: "+test.Elapsed.ToString(@"m\:ss\.ff"));
+        test.Reset();
 
         test.Start();
         _roadSystemConverter.ConvertUnitGraphToGameObjectGraph(unitMap);
