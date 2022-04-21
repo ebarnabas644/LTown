@@ -129,7 +129,7 @@ namespace RoadLayer.Generators
         {
             float minDistance = Int32.MaxValue;
             Node<Unit> closestToTarget = nodeToCheck;
-            foreach (var graph in this.roadBlueprint.GetNeighbourChunksInRange(nodeToCheck, SnapRange))
+            foreach (var graph in this.roadBlueprint.GetNeighbourChunksInSnapRange(nodeToCheck, SnapRange))
             {
                 foreach (var vertex in graph.GetVertexes())
                 {
@@ -142,7 +142,7 @@ namespace RoadLayer.Generators
                 }
             }
 
-            if (minDistance > SnapRange)
+            if (minDistance > SnapRange * SnapRange)
             {
                 return nodeToCheck;
             }
@@ -154,7 +154,7 @@ namespace RoadLayer.Generators
         {
             float xDistance = u.GetContent.X - v.GetContent.X;
             float zDistance = u.GetContent.Z - v.GetContent.Z;
-            return (float)Math.Sqrt(xDistance * xDistance + zDistance * zDistance);
+            return xDistance * xDistance + zDistance * zDistance;
         }
 
         public void RotateRight()
