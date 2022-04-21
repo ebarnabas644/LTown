@@ -62,22 +62,15 @@ namespace ConvertLayer
 
         private void ConvertEdges()
         {
-            List<int> alreadyConverted = new List<int>();
-            foreach (var vertex in this.originalGraph.GetVertexes())
+            foreach (var edge in this.originalGraph.GetEdges())
             {
-                foreach (var edge in vertex.Value)
-                {
-                    if (!alreadyConverted.Contains(edge.GetId))
-                    {
-                        alreadyConverted.Add(edge.GetId);
-                        Node<Unit> start = edge.Start;
-                        Node<Unit> end = edge.End;
-                        Edge<CityObject> goEdge = new Edge<CityObject>(SearchGameObject(start), SearchGameObject(end));
-                        goEdge.Content = _roadBuilder.BuildRoad(edge, 0);
-                        goEdge.Content.GetGameObject().name = "Edge " + goEdge.GetId;
-                        this.convertedGraph.AddEdge(goEdge);
-                    }
-                }
+                Node<Unit> start = edge.Start;
+                Node<Unit> end = edge.End;
+                Edge<CityObject> goEdge = new Edge<CityObject>(SearchGameObject(start), SearchGameObject(end));
+                goEdge.Content = _roadBuilder.BuildRoad(edge, 0);
+                goEdge.Content.GetGameObject().name = "Edge " + goEdge.GetId;
+                this.convertedGraph.AddEdge(goEdge);
+                Debug.Log(edge + ", converted: "+ goEdge);
             }
         }
     }
