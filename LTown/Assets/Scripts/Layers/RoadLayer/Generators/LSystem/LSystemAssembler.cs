@@ -1,6 +1,4 @@
 ﻿using DataTypes;
-using DataTypes.Graph;
-using DataTypes.Graph.Assets.Scripts.Graph;
 using DataTypes.Map;
 
 namespace RoadLayer.Generators
