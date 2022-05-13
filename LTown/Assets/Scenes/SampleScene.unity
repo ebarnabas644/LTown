@@ -595,8 +595,12 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2159941356670082018}
     - target: {fileID: 3302799774685575198, guid: b0f514b784312534cb2c9da0e07c0ae5, type: 3}
-      propertyPath: snapRange
+      propertyPath: chunkSize
       value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 3302799774685575198, guid: b0f514b784312534cb2c9da0e07c0ae5, type: 3}
+      propertyPath: snapRange
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 3302799774685575198, guid: b0f514b784312534cb2c9da0e07c0ae5, type: 3}
       propertyPath: randomAngle
@@ -608,15 +612,15 @@ PrefabInstance:
       objectReference: {fileID: 2678493102155291806}
     - target: {fileID: 3302799774685575198, guid: b0f514b784312534cb2c9da0e07c0ae5, type: 3}
       propertyPath: RoadMaxLenght
-      value: 40
-      objectReference: {fileID: 0}
-    - target: {fileID: 3302799774685575198, guid: b0f514b784312534cb2c9da0e07c0ae5, type: 3}
-      propertyPath: RoadMinLenght
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 3302799774685575198, guid: b0f514b784312534cb2c9da0e07c0ae5, type: 3}
-      propertyPath: numberOfIterations
+      propertyPath: RoadMinLenght
       value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3302799774685575198, guid: b0f514b784312534cb2c9da0e07c0ae5, type: 3}
+      propertyPath: numberOfIterations
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 6431449506011534340, guid: b0f514b784312534cb2c9da0e07c0ae5, type: 3}
       propertyPath: m_RootOrder
