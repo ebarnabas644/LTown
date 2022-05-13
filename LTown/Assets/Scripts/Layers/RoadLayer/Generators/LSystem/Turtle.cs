@@ -27,7 +27,7 @@ namespace RoadLayer.Generators
         public int intersectionRoadNumber { get; set; }
         public int roadMinLenght { get; set; }
         public int roadMaxLenght { get; set; }
-        public Turtle(Unit startPoint)
+        public Turtle(Unit startPoint, int chunkSize)
         {
             this.currentUnit = new Node<Unit>(startPoint);
             this.angleInc = 0;
@@ -37,7 +37,7 @@ namespace RoadLayer.Generators
             this.roadMaxLenght = 10;
             this.intersectionRoadNumber = 4;
             this.transforms = new Stack<SavedUnit>();
-            this.roadBlueprint = new Map<Unit>();
+            this.roadBlueprint = new Map<Unit>(chunkSize);
             this.previousUnit = this.currentUnit;
             this.roadBlueprint.AddVertex(this.previousUnit);
         }

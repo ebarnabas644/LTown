@@ -37,6 +37,8 @@ namespace BuilderLayer
     public int intersectionRoadNumber = 4;
     [SerializeField]
     public float snapRange = 1f;
+    [SerializeField] 
+    public int chunkSize = 100;
 
     private Unit startPoint;
 
@@ -59,7 +61,7 @@ namespace BuilderLayer
     {
         LSystemConfigurator();
         Stopwatch test = new Stopwatch();
-        _lSystemAssembler = new LSystemAssembler(_lSystem, startPoint);
+        _lSystemAssembler = new LSystemAssembler(_lSystem, startPoint, chunkSize);
         TurtleConfigurator();
         
         test.Start();
@@ -131,13 +133,13 @@ namespace BuilderLayer
         }
         foreach (var vertex in map.GetVertexes())
         {
-            GameObject vertexGo = vertex.Key.GetContent.GetGameObject().transform.Find("Intersection").gameObject;
+            GameObject vertexGo = vertex.Key.GetContent.GetGameObject().transform.Find("IntersectionPlane").gameObject;
             Renderer vertexRenderer = vertexGo.GetComponent<Renderer>();
             vertexRenderer.material.color =
                 colorPalette[map.ConvertPositionToChunkPosition(vertex.Key.GetContent.GetPosition())];
             foreach (var road in vertex.Value)
             {
-                GameObject roadGo = road.Content.GetGameObject().transform.Find("Road").gameObject;
+                GameObject roadGo = road.Content.GetGameObject().transform.Find("RoadPlane").gameObject;
                 Renderer roadRenderer = roadGo.GetComponent<Renderer>();
                 roadRenderer.material.color =
                     colorPalette[map.ConvertPositionToChunkPosition(road.Start.GetContent.GetPosition())] * 0.5f;

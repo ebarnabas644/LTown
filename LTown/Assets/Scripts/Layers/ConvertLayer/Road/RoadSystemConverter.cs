@@ -24,7 +24,7 @@ namespace ConvertLayer
         public Map<CityObject> ConvertUnitGraphToGameObjectGraph(Map<Unit> roadSystem)
         {
             this.originalGraph = roadSystem;
-            this.convertedGraph = new Map<CityObject>();
+            this.convertedGraph = new Map<CityObject>(roadSystem.ChunkSize);
             this.ConvertVertexes();
             this.ConvertEdges();
 

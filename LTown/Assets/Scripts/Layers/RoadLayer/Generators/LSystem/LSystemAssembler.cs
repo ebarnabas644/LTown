@@ -8,9 +8,9 @@ namespace RoadLayer.Generators
         private Turtle worker;
         private LSystem lSystem;
 
-        public LSystemAssembler(LSystem lSystem, Unit startPoint)
+        public LSystemAssembler(LSystem lSystem, Unit startPoint, int chunkSize)
         {
-            this.worker = new Turtle(startPoint);
+            this.worker = new Turtle(startPoint, chunkSize);
             this.lSystem = lSystem;
         }
 
