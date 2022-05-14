@@ -7,7 +7,7 @@ namespace DataTypes.Graph
     {
         private static int counter = 0;
         private int id;
-        private T edge;
+        private T _edge;
         public Node<T> Start { get; private set; }
         public Node<T> End { get; private set; }
 
@@ -35,12 +35,12 @@ namespace DataTypes.Graph
         {
             get
             {
-                return edge;
+                return _edge;
             }
 
             set
             {
-                this.edge = value;
+                this._edge = value;
             }
         }
 

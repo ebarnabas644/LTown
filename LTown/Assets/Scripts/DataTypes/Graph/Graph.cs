@@ -103,7 +103,7 @@ namespace DataTypes.Graph
             return vertexes;
         }
 
-        public bool VertexExists(Node<T> vertex)
+        private bool VertexExists(Node<T> vertex)
         {
             if (vertex != null && vertexes.ContainsKey(vertex))
             {
@@ -113,7 +113,7 @@ namespace DataTypes.Graph
             return false;
         }
 
-        public bool EdgeExists(Edge<T> edgeForTest)
+        private bool EdgeExists(Edge<T> edgeForTest)
         {
             foreach (var vertex in vertexes)
             {
