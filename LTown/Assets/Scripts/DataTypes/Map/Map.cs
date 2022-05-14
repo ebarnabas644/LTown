@@ -235,18 +235,7 @@ namespace DataTypes.Map
         public void CreateChunk(Vec3 pos)
         {
             Vec3 chunkPos = ConvertPositionToChunkPosition(pos);
-            for (int z = -1; z <= 1; z++)
-            {
-                for (int x = -1; x <= 1; x++)
-                {
-                    Vec3 tempPos = new Vec3(chunkPos.X + (ChunkSize * x),
-                        chunkPos.Y, chunkPos.Z + (ChunkSize * z));
-                    if (!ChunkExists(tempPos))
-                    {
-                        this._chunkMap.Add(tempPos, new Graph<T>());
-                    }
-                }
-            }
+            this._chunkMap.Add(chunkPos, new Graph<T>());
         }
 
         protected bool ChunkExists(Vec3 pos)
