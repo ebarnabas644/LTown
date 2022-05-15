@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
+//https://mmems.gitbook.io/calepin/algorithms-15/polygon-triangulation-tessellation/triangulator-unity
 public class Triangulator
 {
 	private List<Vector2> m_points = new List<Vector2>();
