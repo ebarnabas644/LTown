@@ -33,6 +33,8 @@ namespace Layers.RoadLayer.PostProcessing
                         {
                             if (!edge2.Equals(edge1) && DoIntersect(edge1.Start, edge1.End, edge2.Start, edge2.End))
                             {
+                                var start = edge2.Start;
+                                var end = edge2.End;
                                 combined.RemoveEdge(edge2.Start, edge2.End, edge2);
                             }
                         }

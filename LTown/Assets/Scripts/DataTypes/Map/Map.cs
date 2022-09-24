@@ -36,16 +36,13 @@ namespace DataTypes.Map
             Vec3 vertexChunkPos1 = ConvertPositionToChunkPosition(edge.Start.GetContent.GetPosition());
             Vec3 vertexChunkPos2 = ConvertPositionToChunkPosition(edge.End.GetContent.GetPosition());
             Graph<T> combined = new Graph<T>();
-            if (ChunkExists(vertexChunkPos1) && ChunkExists(vertexChunkPos2))
+            combined.AddGraph(_chunkMap[vertexChunkPos1]);
+            if (!vertexChunkPos1.Equals(vertexChunkPos2))
             {
-                combined.AddGraph(_chunkMap[vertexChunkPos1]);
-                if (!vertexChunkPos1.Equals(vertexChunkPos2))
-                {
-                    combined.AddGraph(_chunkMap[vertexChunkPos2]);
-                }
-
-                combined.AddEdge(edge);
+                combined.AddGraph(_chunkMap[vertexChunkPos2]);
             }
+
+            combined.AddEdge(edge);
         }
 
         public Dictionary<Vec3, Graph<T>> GetChunks()
