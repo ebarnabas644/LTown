@@ -3,6 +3,7 @@ using System.Diagnostics;
 using ConvertLayer;
 using DataTypes;
 using DataTypes.Map;
+using Layers.PlotLayer;
 using Layers.RoadLayer.PostProcessing;
 using RoadLayer.Generators;
 using UnityEngine;
@@ -72,12 +73,13 @@ namespace BuilderLayer
 
         _roadSystemConverter = new RoadSystemConverter(roadBuilderScript);
         Map<Unit> unitMap = _lSystemAssembler.GenerateGraph();
-
+        GeneratePlots(unitMap);
         test.Start();
         IntersectionFilter<Unit> filter = new IntersectionFilter<Unit>(unitMap);
         unitMap = filter.Filtering();
         test.Stop();
         Debug.Log("Filtering time: "+test.Elapsed.ToString(@"m\:ss\.ff"));
+        Debug.Log("Number of vertexes: " + unitMap.GetVertexes().Count);
         test.Reset();
 
         test.Start();
@@ -162,6 +164,12 @@ namespace BuilderLayer
         }
         
         Debug.Log("Number of chunks: "+_roadSystemConverter.convertedGraph.NumberOfChunks());
+    }
+
+    private void GeneratePlots(Map<Unit> map)
+    {
+        PlotGenerator plotGenerator = new PlotGenerator();
+        plotGenerator.GenerateFromMap(map);
     }
 
     private void MapTester()

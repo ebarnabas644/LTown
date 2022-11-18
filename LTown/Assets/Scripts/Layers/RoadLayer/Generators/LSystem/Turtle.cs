@@ -17,7 +17,6 @@ namespace RoadLayer.Generators
     {
         private Node<Unit> currentUnit;
         private Node<Unit> previousUnit;
-        private float lineLenght;
         private float angleInc;
         private Stack<SavedUnit> transforms;
         private Map<Unit> roadBlueprint;
@@ -31,7 +30,7 @@ namespace RoadLayer.Generators
         {
             this.currentUnit = new Node<Unit>(startPoint);
             this.angleInc = 0;
-            this.lineLenght = 0;
+            this.GetLineLenght = 0;
             this.SnapRange = 1f;
             this.roadMinLenght = 10;
             this.roadMaxLenght = 10;
@@ -42,59 +41,23 @@ namespace RoadLayer.Generators
             this.roadBlueprint.AddVertex(this.previousUnit);
         }
 
-        public float GetX
-        {
-            get
-            {
-                return this.currentUnit.GetContent.X;
-            }
-        }
+        public float GetX => this.currentUnit.GetContent.X;
 
-        public float GetY
-        {
-            get
-            {
-                return this.currentUnit.GetContent.Y;
-            }
-        }
+        public float GetY => this.currentUnit.GetContent.Y;
 
-        public float GetZ
-        {
-            get
-            {
-                return this.currentUnit.GetContent.Z;
-            }
-        }
+        public float GetZ => this.currentUnit.GetContent.Z;
 
-        public float GetAngle
-        {
-            get
-            {
-                return this.currentUnit.GetContent.Angle;
-            }
-        }
+        public float GetAngle => this.currentUnit.GetContent.Angle;
 
-        public float GetLineLenght
-        {
-            get
-            {
-                return this.lineLenght;
-            }
-        }
+        public float GetLineLenght { get; private set; }
 
-        public Map<Unit> GetRoadBlueprint
-        {
-            get
-            {
-                return this.roadBlueprint;
-            }
-        }
+        public Map<Unit> GetRoadBlueprint => this.roadBlueprint;
 
         public void PlaceRoad()
         {
             Random rnd = new Random();
             float newAngle = rnd.Next(1,this.randomMultiplier + 1) * this.randomAngle;
-            this.lineLenght = rnd.Next(this.roadMinLenght, this.roadMaxLenght + 1);
+            this.GetLineLenght = rnd.Next(this.roadMinLenght, this.roadMaxLenght + 1);
             double radian = newAngle * Math.PI / 180;
             float newX = (float)(GetX + Math.Sin(radian) * GetLineLenght);
             float newZ = (float)(GetZ + Math.Cos(radian) * GetLineLenght);
@@ -179,7 +142,7 @@ namespace RoadLayer.Generators
         {
             set
             {
-                this.lineLenght = value;
+                this.GetLineLenght = value;
             }
         }
 
