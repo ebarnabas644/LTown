@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using ConvertLayer;
 using DataTypes;
 using DataTypes.Map;
@@ -73,7 +74,6 @@ namespace BuilderLayer
 
         _roadSystemConverter = new RoadSystemConverter(roadBuilderScript);
         Map<Unit> unitMap = _lSystemAssembler.GenerateGraph();
-        GeneratePlots(unitMap);
         test.Start();
         IntersectionFilter<Unit> filter = new IntersectionFilter<Unit>(unitMap);
         unitMap = filter.Filtering();
@@ -83,11 +83,18 @@ namespace BuilderLayer
         test.Reset();
 
         test.Start();
-        _roadSystemConverter.ConvertUnitGraphToGameObjectGraph(unitMap);
+        var cityMap = _roadSystemConverter.ConvertUnitGraphToGameObjectGraph(unitMap);
         test.Stop();
         Debug.Log("Gameobject conversion time: "+test.Elapsed.ToString(@"m\:ss\.ff"));
         test.Reset();
         
+        Debug.Log("Generating plots:");
+        
+        test.Start();
+        GeneratePlots(cityMap);
+        test.Stop();
+        Debug.Log("Plot detection time: "+test.Elapsed.ToString(@"m\:ss\.ff"));
+        test.Reset();
         Debug.Log(_lSystem.GetAxiom);
     }
 
@@ -166,10 +173,76 @@ namespace BuilderLayer
         Debug.Log("Number of chunks: "+_roadSystemConverter.convertedGraph.NumberOfChunks());
     }
 
-    private void GeneratePlots(Map<Unit> map)
+    private void GeneratePlots(Map<CityObject> map)
     {
-        PlotGenerator plotGenerator = new PlotGenerator();
-        plotGenerator.GenerateFromMap(map);
+        PlotGenerator<CityObject> plotGenerator = new PlotGenerator<CityObject>(map);
+        var plots = plotGenerator.GenerateFromMap();
+        DrawPlots(plots);
+        Debug.Log("Number of plots: "+ plots.Count);
+        foreach (var plot in plots)
+        {
+            Debug.Log(plot);
+        }
+    }
+
+    private void DrawPlots(List<Polygon<CityObject>> plots)
+    {
+        List<Vector2> vertices2D = new List<Vector2>();
+        List<Vector3> vertices3D = new List<Vector3>();
+        int counter = 0;
+        foreach (var plot in plots)
+        {
+            if (IsClockwisePolygon(plot))
+            {
+                foreach (var point in plot.Points)
+                {
+                    vertices2D.Add(new Vector2(point.GetContent.GetPosition().X, point.GetContent.GetPosition().Z));
+                    vertices3D.Add(new Vector3(point.GetContent.GetPosition().X, 0.1f, point.GetContent.GetPosition().Z));
+                }
+            }
+            
+            else
+            {
+                for (int i = plot.Points.Count - 1; i >= 0; i--)
+                {
+                    vertices2D.Add(new Vector2(plot.Points[i].GetContent.GetPosition().X, plot.Points[i].GetContent.GetPosition().Z));
+                    vertices3D.Add(new Vector3(plot.Points[i].GetContent.GetPosition().X, 0.1f, plot.Points[i].GetContent.GetPosition().Z));
+                }
+            }
+
+            Triangulator triangulator = new Triangulator(vertices2D.ToArray());
+            int[] indices = triangulator.Triangulate();
+
+            Mesh mesh = new Mesh();
+            mesh.vertices = vertices3D.ToArray();
+            mesh.triangles = indices;
+            mesh.RecalculateNormals();
+            mesh.RecalculateBounds();
+
+            var plotGameObject = new GameObject();
+            plotGameObject.name = "Plot " + counter;
+            MeshFilter filter = plotGameObject.AddComponent<MeshFilter>();
+            var renderer = plotGameObject.AddComponent<MeshRenderer>();
+            renderer.material.color = Color.gray;
+            filter.mesh = mesh;
+            //plotGameObject.transform.localScale = new Vector3(0.9f, 0.1f * 0.9f, 0.9f);
+            counter++;
+            vertices2D.Clear();
+            vertices3D.Clear();
+        }
+    }
+
+    private bool IsClockwisePolygon(Polygon<CityObject> polygon)
+    {
+        float edgeSum = 0;
+        for (int i = 0; i < polygon.Points.Count - 1; i++)
+        {
+            Vec3 point1 = polygon.Points[i].GetContent.GetPosition();
+            Vec3 point2 = polygon.Points[i + 1 % polygon.Points.Count].GetContent.GetPosition();
+            edgeSum += (point2.X - point1.X) * (point2.Z + point1.Z);
+        }
+
+        return edgeSum < 0;
     }
 
     private void MapTester()

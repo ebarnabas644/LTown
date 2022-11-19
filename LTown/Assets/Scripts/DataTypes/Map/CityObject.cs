@@ -21,5 +21,17 @@ namespace DataTypes.Map
             Vector3 pos = _gameObject.transform.position;
             return new Vec3(pos.x, pos.y, pos.z);
         }
+
+        public override bool Equals(object obj)
+        {
+            var item = obj as CityObject;
+
+            if (item == null)
+            {
+                return false;
+            }
+
+            return GetPosition().Equals(item.GetPosition());
+        }
     }
 }
