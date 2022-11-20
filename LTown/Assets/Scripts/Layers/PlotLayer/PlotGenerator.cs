@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using DataTypes;
 using DataTypes.Graph;
@@ -11,168 +12,74 @@ namespace Layers.PlotLayer
     {
         private Map<T> map;
         private Dictionary<Node<T>, HashSet<Edge<T>>> vertexes;
+        private int maxRoadLenght;
+        private List<Polygon<T>> plots = new List<Polygon<T>>();
+        private List<Polygon<T>> foundedPlots = new List<Polygon<T>>();
 
-        public PlotGenerator(Map<T> map)
+        public PlotGenerator(Map<T> map, int maxRoadLenght)
         {
             this.map = map;
+            this.maxRoadLenght = maxRoadLenght;
             vertexes = map.GetVertexes();
         }
         public List<Polygon<T>> GenerateFromMap()
         {
-            //List<Polygon<T>> plots = new List<Polygon<T>>();
-
             foreach (var vertex in vertexes)
             {
-                //var plot = StartSearch(vertex);
-                StartSearch(vertex);
-                /*
-                if (!plots.Contains(plot))
+                var searchResult = new Polygon<T>();
+                searchResult.AddPoint(vertex.Key);
+                Search(vertex.Key, vertex.Key, searchResult, 0, 5);
+                var smallestPlot = new Polygon<T>();
+                foreach (var plot in foundedPlots)
                 {
-                    //plots.Add(StartSearch(vertex));
-                    StartSearch(vertex);
-                }*/
+                    if (smallestPlot.Lenght == 0 || (smallestPlot.Lenght > plot.Lenght))
+                    {
+                        smallestPlot = plot;
+                    }
+                    else if(plot.Lenght <= 5)
+                    {
+                        if (!plots.Contains(smallestPlot))
+                        {
+                            plots.Add(smallestPlot);
+                        }
+                    }
+                }
+                if (!plots.Contains(smallestPlot))
+                {
+                    plots.Add(smallestPlot);
+                }
+                foundedPlots.Clear();
             }
 
             return plots;
         }
 
-        private void StartSearch(KeyValuePair<Node<T>, HashSet<Edge<T>>> startPoint)
+        private void Search(Node<T> startPoint, Node<T> currentPoint, Polygon<T> pathInProgress, int depth, int maxDepth = 5)
         {
-            foreach (var edge in startPoint.Value)
+            if (!pathInProgress.AddPoint(currentPoint) && depth > 0)
             {
-                var searchResult = new Polygon<T>();
-                searchResult.AddPoint(startPoint.Key);
-                if (!edge.Start.Equals(startPoint.Key))
+                if (startPoint.Equals(currentPoint) && pathInProgress.Lenght > 2)
                 {
-                    //searchResult = Search(startPoint.Key, edge.Start, searchResult, 8);
-
-                    if (Search(startPoint.Key, edge.Start, searchResult, 8) && searchResult.Lenght > 2)
-                    {
-                        plots.Add(searchResult);
-                    }
+                    foundedPlots.Add(pathInProgress);
                 }
-                else
-                {
-                    //searchResult = Search(startPoint.Key, edge.End, searchResult, 8);
-                    if (Search(startPoint.Key, edge.End, searchResult, 8) && searchResult.Lenght > 2)
-                    {
-                        plots.Add(searchResult);
-                    }
-                }
+                return;
             }
-        }
-        
-        private bool Search(Node<T> startPoint, Node<T> currentPoint, Polygon<T> pathInProgress, int maxIteration)
-        {
-            if (maxIteration <= 0) return false;
+            if (depth >= maxDepth) return;
             foreach (var edge in vertexes[currentPoint])
             {
                 var endPoint = edge.Start.Equals(currentPoint) ? edge.End : edge.Start;
-                if (endPoint.Equals(startPoint))
+                if (DistanceFromTwoPoint(startPoint.GetContent, endPoint.GetContent) <= Math.Pow(maxRoadLenght * (depth + 1), 2))
                 {
-                    if (!pathInProgress.AddPoint(currentPoint))
-                    {
-                        return false;
-                    }
-                    return true;
-                }
-                var success = Search(startPoint, endPoint, pathInProgress, --maxIteration);
-                if (success)
-                {
-                    if (!pathInProgress.AddPoint(currentPoint))
-                    {
-                        return false;
-                    }
-                    return true;
+                    Search(startPoint, endPoint, new Polygon<T>(pathInProgress), depth + 1, maxDepth);
                 }
             }
-
-            return false;
         }
-        
-        /*private Polygon<T> StartSearch2(KeyValuePair<Node<T>, HashSet<Edge<T>>> startPoint)
+
+        private float DistanceFromTwoPoint(T point1, T point2)
         {
-            var shortestCycle = new Polygon<T>();
-            foreach (var edge in startPoint.Value)
-            {
-                var searchResult = new Polygon<T>();
-                searchResult.AddPoint(startPoint.Key);
-                if (!edge.Start.Equals(startPoint.Key))
-                {
-                    //searchResult = Search(startPoint.Key, edge.Start, searchResult, 8);
-                    Search(startPoint.Key, edge.Start, searchResult, 8);
-                }
-                else
-                {
-                    //searchResult = Search(startPoint.Key, edge.End, searchResult, 8);
-                    Search(startPoint.Key, edge.End, searchResult, 8);
-                }
-
-                if (searchResult.Lenght > 2 &&
-                    (shortestCycle.Lenght == 0 || searchResult.Lenght < shortestCycle.Lenght))
-                {
-                    shortestCycle = searchResult;
-                }
-            }
-
-            return shortestCycle;
-        }*/
-
-        /*
-        private Polygon<T> Search2(Node<T> startPoint, Node<T> currentPoint, Polygon<T> pathInProgress, int maxIteration)
-        {
-            if (startPoint.Equals(currentPoint) && pathInProgress.Lenght > 2)
-            {
-                return pathInProgress;
-            }
-            if (maxIteration > 0)
-            {
-                foreach (var edge in vertexes[currentPoint])
-                {
-                    if (!edge.Start.Equals(currentPoint))
-                    {
-                        var addResult = pathInProgress.AddPoint(edge.Start);
-                        if(!addResult) continue;
-                        return Search(startPoint, edge.Start, new Polygon<T>(pathInProgress), --maxIteration);
-                    }
-                    else
-                    {
-                        var addResult = pathInProgress.AddPoint(edge.End);
-                        if(!addResult) continue;
-                        return Search(startPoint, edge.End, new Polygon<T>(pathInProgress), --maxIteration);
-                    }
-                }
-            }
-
-            return new Polygon<T>();
-        }*/
-
-        private List<Polygon<T>> plots = new List<Polygon<T>>();
-        
-        /*private bool Search(Node<T> startPoint, Node<T> currentPoint, Polygon<T> pathInProgress, int maxIteration)
-        {
-            if (maxIteration <= 0) return false;
-            if (startPoint.Equals(currentPoint))
-            {
-                pathInProgress.AddPoint(currentPoint);
-                return true;
-            }
-    
-            foreach (var edge in vertexes[currentPoint])
-            {
-                var endPoint = edge.Start.Equals(currentPoint) ? edge.End : edge.Start;
-                var success = Search(startPoint, endPoint, new Polygon<T>(pathInProgress), --maxIteration);
-                if (success)
-                {
-                    pathInProgress.AddPoint(currentPoint);
-                    return true;
-                }
-            }
-
-            return false;
-        }*/
-        
-
-        
+            var dx = point1.GetPosition().X - point2.GetPosition().X;
+            var dz = point1.GetPosition().Z - point2.GetPosition().Z;
+            return dx * dx + dz * dz;
+        }
     }
 }

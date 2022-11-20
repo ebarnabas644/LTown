@@ -53,7 +53,7 @@ namespace BuilderLayer
         CallBuilder();
         ChunkColorizer();
         //GraphTest();
-        GameObjectGraphTest();
+        //GameObjectGraphTest();
         //ChunkColorizer();
         //MapTester();
         
@@ -91,10 +91,19 @@ namespace BuilderLayer
         Debug.Log("Generating plots:");
         
         test.Start();
-        GeneratePlots(cityMap);
+        var plots = GeneratePlots(cityMap);
         test.Stop();
         Debug.Log("Plot detection time: "+test.Elapsed.ToString(@"m\:ss\.ff"));
         test.Reset();
+        
+        Debug.Log("Drawing plots:");
+        test.Start();
+        DrawPlots(plots);
+        test.Stop();
+        Debug.Log("Plot drawing time: "+test.Elapsed.ToString(@"m\:ss\.ff"));
+        test.Reset();
+        
+        //PlotTester(plots);
         Debug.Log(_lSystem.GetAxiom);
     }
 
@@ -173,16 +182,10 @@ namespace BuilderLayer
         Debug.Log("Number of chunks: "+_roadSystemConverter.convertedGraph.NumberOfChunks());
     }
 
-    private void GeneratePlots(Map<CityObject> map)
+    private List<Polygon<CityObject>> GeneratePlots(Map<CityObject> map)
     {
-        PlotGenerator<CityObject> plotGenerator = new PlotGenerator<CityObject>(map);
-        var plots = plotGenerator.GenerateFromMap();
-        DrawPlots(plots);
-        Debug.Log("Number of plots: "+ plots.Count);
-        foreach (var plot in plots)
-        {
-            Debug.Log(plot);
-        }
+        PlotGenerator<CityObject> plotGenerator = new PlotGenerator<CityObject>(map, RoadMaxLenght);
+        return plotGenerator.GenerateFromMap();
     }
 
     private void DrawPlots(List<Polygon<CityObject>> plots)
@@ -220,18 +223,36 @@ namespace BuilderLayer
             mesh.RecalculateBounds();
 
             var plotGameObject = new GameObject();
-            plotGameObject.name = "Plot " + counter;
+            var plotPivotPoint = new GameObject();
+            plotPivotPoint.transform.position = CenterVectorOfPolygon(vertices3D);
+            plotPivotPoint.name = "Plot " + counter;
+            plotGameObject.name = "Plot plane";
             MeshFilter filter = plotGameObject.AddComponent<MeshFilter>();
             var renderer = plotGameObject.AddComponent<MeshRenderer>();
             renderer.material.color = Color.gray;
             filter.mesh = mesh;
-            //plotGameObject.transform.localScale = new Vector3(0.9f, 0.1f * 0.9f, 0.9f);
+            plotGameObject.transform.SetParent(plotPivotPoint.transform);
+            
+            plotPivotPoint.transform.localScale = new Vector3(0.9f, 0.1f * 0.9f, 0.9f);
             counter++;
             vertices2D.Clear();
             vertices3D.Clear();
         }
     }
 
+    private Vector3 CenterVectorOfPolygon(List<Vector3> vectors)
+    {
+        var avg = new Vector3(0, 0, 0);
+        foreach (var vector in vectors)
+        {
+            avg += vector;
+        }
+
+        avg /= vectors.Count;
+
+        return avg;
+    }
+    
     private bool IsClockwisePolygon(Polygon<CityObject> polygon)
     {
         float edgeSum = 0;
@@ -243,6 +264,15 @@ namespace BuilderLayer
         }
 
         return edgeSum < 0;
+    }
+
+    private void PlotTester(List<Polygon<CityObject>> plots)
+    {
+        Debug.Log("Number of plots: "+ plots.Count);
+        foreach (var plot in plots)
+        {
+            Debug.Log(plot);
+        }
     }
 
     private void MapTester()
