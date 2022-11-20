@@ -70,7 +70,7 @@ namespace ConvertLayer
                 goEdge.Content = _roadBuilder.BuildRoad(edge, 0);
                 goEdge.Content.GetGameObject().name = "Edge " + goEdge.GetId;
                 this.convertedGraph.AddEdge(goEdge);
-                Debug.Log(edge + ", converted: "+ goEdge);
+                //Debug.Log(edge + ", converted: "+ goEdge);
             }
         }
     }
