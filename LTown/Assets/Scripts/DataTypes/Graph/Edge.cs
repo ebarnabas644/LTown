@@ -73,6 +73,17 @@ namespace DataTypes.Graph
             var endPos = End.GetContent.GetPosition();
             return (startPos + endPos) / 2;
         }
+
+        public Tuple<Vec3, Vec3> CalculateNormal()
+        {
+            var startPos = Start.GetContent.GetPosition();
+            var endPos = End.GetContent.GetPosition();
+            var sub = endPos - startPos;
+            var normal1 = new Vec3(-sub.Z, sub.Y, sub.X);
+            var normal2 = new Vec3(sub.Z, sub.Y, -sub.X);
+
+            return new Tuple<Vec3, Vec3>(normal1, normal2);
+        }
         
         public override string ToString()
         {

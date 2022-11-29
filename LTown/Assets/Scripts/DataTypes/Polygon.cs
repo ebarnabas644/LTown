@@ -15,7 +15,7 @@ namespace DataTypes
 
         public HashSet<Polygon<T>> SubPolygons;
 
-        public int Lenght => Points.Count;
+        public int Length => Points.Count;
 
         public Polygon()
         {
@@ -44,10 +44,11 @@ namespace DataTypes
 
         public Edge<T> GetLongestEdge()
         {
-            Edge<T> longest = null;
-            foreach (var edge in GetPolygonEdges())
+            var edges = GetPolygonEdges();
+            Edge<T> longest = edges[0];
+            foreach (var edge in edges)
             {
-                if (longest == null || edge.Distance() > longest.Distance())
+                if (edge.Distance() > longest.Distance())
                 {
                     longest = edge;
                 }
@@ -109,6 +110,17 @@ namespace DataTypes
             }
             
             return text.ToString();
+        }
+
+        public float EstimateArea()
+        {
+            float sum = 0;
+            foreach (var point in Points)
+            {
+                sum += CenterPoint.DistanceFrom(point.GetContent.GetPosition());
+            }
+
+            return sum / Points.Count;
         }
     }
 }

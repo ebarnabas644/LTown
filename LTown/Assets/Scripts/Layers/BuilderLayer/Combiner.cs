@@ -41,6 +41,8 @@ namespace BuilderLayer
     public int intersectionRoadNumber = 4;
     [SerializeField]
     public float snapRange = 1f;
+    [SerializeField]
+    public float targetPlotArea = 15f;
     [SerializeField] 
     public int chunkSize = 100;
 
@@ -94,8 +96,8 @@ namespace BuilderLayer
         test.Reset();
         
         test.Start();
-        var subPlotGenerator = new SubPlotGenerator(plots);
-        subPlotGenerator.Generate();
+        var subPlotGenerator = new SubPlotGenerator(plots, targetPlotArea);
+        var subPlots = subPlotGenerator.Generate();
         test.Stop();
         Debug.Log("Plot detection time: "+test.Elapsed.ToString(@"m\:ss\.ff"));
         test.Reset();
@@ -108,7 +110,7 @@ namespace BuilderLayer
 
         Debug.Log("Drawing plots:");
         test.Start();
-        DrawPlots(plots);
+        DrawPlots(subPlots);
         test.Stop();
         Debug.Log("Plot drawing time: "+test.Elapsed.ToString(@"m\:ss\.ff"));
         test.Reset();

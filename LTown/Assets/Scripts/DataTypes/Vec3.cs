@@ -41,9 +41,15 @@ namespace DataTypes
 
         public static Vec3 operator +(Vec3 a, Vec3 b)
             => new Vec3(a.X + b.X, a.Y + b.Y, a.Z + b.Z);
+        
+        public static Vec3 operator -(Vec3 a, Vec3 b)
+            => new Vec3(a.X - b.X, a.Y - b.Y, a.Z - b.Z);
 
         public static Vec3 operator /(Vec3 a, float b)
             => new Vec3(a.X / b, a.Y / b, a.Z / b);
+        
+        public static Vec3 operator *(Vec3 a, float b)
+            => new Vec3(a.X * b, a.Y * b, a.Z * b);
 
         private bool Equals(Vec3 other)
         {

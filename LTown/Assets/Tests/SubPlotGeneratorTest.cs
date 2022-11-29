@@ -12,7 +12,7 @@ public class SubPlotGeneratorTest
     [SetUp]
     public void Setup()
     {
-        _generator = new SubPlotGenerator(new HashSet<Polygon<Unit>>());
+        //_generator = new SubPlotGenerator(new HashSet<Polygon<Unit>>());
     }
     
     [Test]

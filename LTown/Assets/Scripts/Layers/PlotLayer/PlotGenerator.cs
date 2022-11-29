@@ -33,12 +33,16 @@ namespace Layers.PlotLayer
                 var smallestPlot = new Polygon<T>();
                 foreach (var plot in foundedPlots)
                 {
-                    if (smallestPlot.Lenght == 0 || (smallestPlot.Lenght > plot.Lenght))
+                    if (smallestPlot.Length == 0 || (smallestPlot.Length > plot.Length))
                     {
                         smallestPlot = plot;
                     }
                 }
-                plots.Add(smallestPlot);
+
+                if (smallestPlot.Length > 2)
+                {
+                    plots.Add(smallestPlot);
+                }
                 foundedPlots.Clear();
             }
 
@@ -49,7 +53,7 @@ namespace Layers.PlotLayer
         {
             if (!pathInProgress.AddPoint(currentPoint) && depth > 0)
             {
-                if (startPoint.Equals(currentPoint) && pathInProgress.Lenght > 2)
+                if (startPoint.Equals(currentPoint) && pathInProgress.Length > 2)
                 {
                     foundedPlots.Add(pathInProgress);
                 }
