@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using ConvertLayer;
@@ -8,6 +9,7 @@ using Layers.PlotLayer;
 using Layers.RoadLayer.PostProcessing;
 using RoadLayer.Generators;
 using UnityEngine;
+using UnityEngine.Rendering;
 using Debug = UnityEngine.Debug;
 using Random = UnityEngine.Random;
 
@@ -51,7 +53,7 @@ namespace BuilderLayer
         startPoint = new Unit(start.transform.position.x, start.transform.position.y, start.transform.position.z, start.transform.rotation.eulerAngles.y);
         roadBuilderScript = roadBuilder.GetComponent<RoadBuilder>();
         CallBuilder();
-        ChunkColorizer();
+        //ChunkColorizer();
         //GraphTest();
         //GameObjectGraphTest();
         //ChunkColorizer();
@@ -75,11 +77,27 @@ namespace BuilderLayer
         _roadSystemConverter = new RoadSystemConverter(roadBuilderScript);
         Map<Unit> unitMap = _lSystemAssembler.GenerateGraph();
         test.Start();
-        IntersectionFilter<Unit> filter = new IntersectionFilter<Unit>(unitMap);
-        unitMap = filter.Filtering();
+        IntersectionFilter<Unit> filter = new IntersectionFilter<Unit>();
+        unitMap = filter.Filtering(unitMap);
+        unitMap = filter.FilterIntersectionWithoutEdge(unitMap);
         test.Stop();
         Debug.Log("Filtering time: "+test.Elapsed.ToString(@"m\:ss\.ff"));
         Debug.Log("Number of vertexes: " + unitMap.GetVertexes().Count);
+        test.Reset();
+        
+        Debug.Log("Generating plots:");
+        
+        test.Start();
+        var plots = GeneratePlots(unitMap);
+        test.Stop();
+        Debug.Log("Plot detection time: "+test.Elapsed.ToString(@"m\:ss\.ff"));
+        test.Reset();
+        
+        test.Start();
+        var subPlotGenerator = new SubPlotGenerator(plots);
+        subPlotGenerator.Generate();
+        test.Stop();
+        Debug.Log("Plot detection time: "+test.Elapsed.ToString(@"m\:ss\.ff"));
         test.Reset();
 
         test.Start();
@@ -87,15 +105,7 @@ namespace BuilderLayer
         test.Stop();
         Debug.Log("Gameobject conversion time: "+test.Elapsed.ToString(@"m\:ss\.ff"));
         test.Reset();
-        
-        Debug.Log("Generating plots:");
-        
-        test.Start();
-        var plots = GeneratePlots(cityMap);
-        test.Stop();
-        Debug.Log("Plot detection time: "+test.Elapsed.ToString(@"m\:ss\.ff"));
-        test.Reset();
-        
+
         Debug.Log("Drawing plots:");
         test.Start();
         DrawPlots(plots);
@@ -182,19 +192,22 @@ namespace BuilderLayer
         Debug.Log("Number of chunks: "+_roadSystemConverter.convertedGraph.NumberOfChunks());
     }
 
-    private List<Polygon<CityObject>> GeneratePlots(Map<CityObject> map)
+    private HashSet<Polygon<T>> GeneratePlots<T>(Map<T> map) where T : ILocatable
     {
-        PlotGenerator<CityObject> plotGenerator = new PlotGenerator<CityObject>(map, RoadMaxLenght);
-        return plotGenerator.GenerateFromMap();
+        PlotGenerator<T> plotGenerator = new PlotGenerator<T>(map, RoadMaxLenght);
+        var plots = plotGenerator.GenerateFromMap();
+        Debug.Log("Number of search recursive invoke: " + plotGenerator.NumberOfSearchIterations);
+        return plots;
     }
 
-    private void DrawPlots(List<Polygon<CityObject>> plots)
+    private void DrawPlots<T>(HashSet<Polygon<T>> plots) where T : ILocatable
     {
         List<Vector2> vertices2D = new List<Vector2>();
         List<Vector3> vertices3D = new List<Vector3>();
         int counter = 0;
         foreach (var plot in plots)
         {
+            if(plot == null) continue;
             if (IsClockwisePolygon(plot))
             {
                 foreach (var point in plot.Points)
@@ -221,39 +234,34 @@ namespace BuilderLayer
             mesh.triangles = indices;
             mesh.RecalculateNormals();
             mesh.RecalculateBounds();
-
-            var plotGameObject = new GameObject();
-            var plotPivotPoint = new GameObject();
-            plotPivotPoint.transform.position = CenterVectorOfPolygon(vertices3D);
-            plotPivotPoint.name = "Plot " + counter;
-            plotGameObject.name = "Plot plane";
-            MeshFilter filter = plotGameObject.AddComponent<MeshFilter>();
-            var renderer = plotGameObject.AddComponent<MeshRenderer>();
-            renderer.material.color = Color.gray;
-            filter.mesh = mesh;
-            plotGameObject.transform.SetParent(plotPivotPoint.transform);
             
-            plotPivotPoint.transform.localScale = new Vector3(0.9f, 0.1f * 0.9f, 0.9f);
+            if (vertices3D.Count > 0)
+            {
+                var plotGameObject = new GameObject();
+                var plotPivotPoint = new GameObject();
+                var centerPoint = plot.CenterPoint;
+                var pivotPointPosition = new Vector3(centerPoint.X, centerPoint.Y, centerPoint.Z);
+                plotPivotPoint.transform.position = pivotPointPosition;
+                plotPivotPoint.name = "Plot " + counter;
+                plotGameObject.name = "Plot plane";
+                MeshFilter filter = plotGameObject.AddComponent<MeshFilter>();
+                var renderer = plotGameObject.AddComponent<MeshRenderer>();
+                renderer.shadowCastingMode = ShadowCastingMode.Off;
+                renderer.receiveShadows = false;
+                renderer.material.color = Color.gray;
+                filter.mesh = mesh;
+                plotGameObject.transform.SetParent(plotPivotPoint.transform);
+                //plotPivotPoint.transform.Rotate(Vector3.up, -120);
+
+                plotPivotPoint.transform.localScale = new Vector3(0.9f, 0.1f * 0.9f, 0.9f);
+            }
             counter++;
             vertices2D.Clear();
             vertices3D.Clear();
         }
     }
 
-    private Vector3 CenterVectorOfPolygon(List<Vector3> vectors)
-    {
-        var avg = new Vector3(0, 0, 0);
-        foreach (var vector in vectors)
-        {
-            avg += vector;
-        }
-
-        avg /= vectors.Count;
-
-        return avg;
-    }
-    
-    private bool IsClockwisePolygon(Polygon<CityObject> polygon)
+    private bool IsClockwisePolygon<T>(Polygon<T> polygon) where T : ILocatable
     {
         float edgeSum = 0;
         for (int i = 0; i < polygon.Points.Count - 1; i++)

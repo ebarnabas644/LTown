@@ -22,6 +22,11 @@ namespace DataTypes.Map
             return new Vec3(pos.x, pos.y, pos.z);
         }
 
+        public void SetPosition(Vec3 pos)
+        {
+            _gameObject.transform.position = new Vector3(pos.X, pos.Y, pos.Z);
+        }
+
         public override bool Equals(object obj)
         {
             var item = obj as CityObject;

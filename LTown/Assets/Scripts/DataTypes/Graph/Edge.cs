@@ -58,6 +58,22 @@ namespace DataTypes.Graph
             }
         }
 
+        public float Distance()
+        {
+            var startPos = Start.GetContent.GetPosition();
+            var endPos = End.GetContent.GetPosition();
+            var distX = endPos.X - startPos.X;
+            var distZ = endPos.Z - startPos.Z;
+            return distX * distX + distZ * distZ;
+        }
+
+        public Vec3 MiddlePoint()
+        {
+            var startPos = Start.GetContent.GetPosition();
+            var endPos = End.GetContent.GetPosition();
+            return (startPos + endPos) / 2;
+        }
+        
         public override string ToString()
         {
             return "|EdgeId: " + this.GetId + "|Start: " + this.Start + "End: " + this.End;

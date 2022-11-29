@@ -56,5 +56,10 @@ namespace DataTypes
         {
             return this.Position;
         }
+
+        public void SetPosition(Vec3 pos)
+        {
+            Position = pos;
+        }
     }
 }

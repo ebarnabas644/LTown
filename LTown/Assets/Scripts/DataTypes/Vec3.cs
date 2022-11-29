@@ -31,6 +31,20 @@ namespace DataTypes
             return HashCode.Combine(this.X, this.Y, this.Z);
         }
 
+        public float DistanceFrom(Vec3 target)
+        {
+            var distX = target.X - this.X;
+            var distZ = target.Z - this.Z;
+            return distX * distX + distZ * distZ;
+        }
+        
+
+        public static Vec3 operator +(Vec3 a, Vec3 b)
+            => new Vec3(a.X + b.X, a.Y + b.Y, a.Z + b.Z);
+
+        public static Vec3 operator /(Vec3 a, float b)
+            => new Vec3(a.X / b, a.Y / b, a.Z / b);
+
         private bool Equals(Vec3 other)
         {
             return Math.Abs(this.X - other.X) < Tolerance &&

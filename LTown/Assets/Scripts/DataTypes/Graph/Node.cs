@@ -21,6 +21,10 @@ namespace DataTypes.Graph
             {
                 return this._node;
             }
+            set
+            {
+                this._node = value;
+            }
         }
 
         public int GetId

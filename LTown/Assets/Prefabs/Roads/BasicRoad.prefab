@@ -87,6 +87,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: RoadPlane
       objectReference: {fileID: 0}
+    - target: {fileID: 5112583873993770398, guid: 85d236045cd60a94180b559dbc5af764, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5112583873993770398, guid: 85d236045cd60a94180b559dbc5af764, type: 3}
+      propertyPath: m_ReceiveShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 85d236045cd60a94180b559dbc5af764, type: 3}
 --- !u!4 &4120267916401343404 stripped

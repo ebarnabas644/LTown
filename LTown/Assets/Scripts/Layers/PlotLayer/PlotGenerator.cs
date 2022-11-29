@@ -13,8 +13,9 @@ namespace Layers.PlotLayer
         private Map<T> map;
         private Dictionary<Node<T>, HashSet<Edge<T>>> vertexes;
         private int maxRoadLenght;
-        private List<Polygon<T>> plots = new List<Polygon<T>>();
+        private HashSet<Polygon<T>> plots = new HashSet<Polygon<T>>();
         private List<Polygon<T>> foundedPlots = new List<Polygon<T>>();
+        public int NumberOfSearchIterations = 0;
 
         public PlotGenerator(Map<T> map, int maxRoadLenght)
         {
@@ -22,7 +23,7 @@ namespace Layers.PlotLayer
             this.maxRoadLenght = maxRoadLenght;
             vertexes = map.GetVertexes();
         }
-        public List<Polygon<T>> GenerateFromMap()
+        public HashSet<Polygon<T>> GenerateFromMap()
         {
             foreach (var vertex in vertexes)
             {
@@ -36,18 +37,8 @@ namespace Layers.PlotLayer
                     {
                         smallestPlot = plot;
                     }
-                    else if(plot.Lenght <= 5)
-                    {
-                        if (!plots.Contains(smallestPlot))
-                        {
-                            plots.Add(smallestPlot);
-                        }
-                    }
                 }
-                if (!plots.Contains(smallestPlot))
-                {
-                    plots.Add(smallestPlot);
-                }
+                plots.Add(smallestPlot);
                 foundedPlots.Clear();
             }
 
@@ -68,8 +59,9 @@ namespace Layers.PlotLayer
             foreach (var edge in vertexes[currentPoint])
             {
                 var endPoint = edge.Start.Equals(currentPoint) ? edge.End : edge.Start;
-                if (DistanceFromTwoPoint(startPoint.GetContent, endPoint.GetContent) <= Math.Pow(maxRoadLenght * (depth + 1), 2))
+                if (DistanceFromTwoPoint(startPoint.GetContent, endPoint.GetContent) <= Math.Pow(maxRoadLenght * (maxDepth - depth), 2))
                 {
+                    NumberOfSearchIterations++;
                     Search(startPoint, endPoint, new Polygon<T>(pathInProgress), depth + 1, maxDepth);
                 }
             }

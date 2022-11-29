@@ -11,14 +11,12 @@ namespace Layers.RoadLayer.PostProcessing
     //https://www.geeksforgeeks.org/check-if-two-given-line-segments-intersect/
     public class IntersectionFilter<T> where T : ILocatable
     {
-        private Map<T> data;
-
-        public IntersectionFilter(Map<T> data)
+        public IntersectionFilter()
         {
-            this.data = data;
+
         }
 
-        public Map<T> Filtering()
+        public Map<T> Filtering(Map<T> data)
         {
             foreach (var chunk in data.GetChunks().ToList())
             {
@@ -41,9 +39,30 @@ namespace Layers.RoadLayer.PostProcessing
                     }
                 }
             }
-            return this.data;
+
+            return data;
         }
-        
+
+        public Map<T> FilterIntersectionWithoutEdge(Map<T> data)
+        {
+            var chunks = data.GetChunks();
+            foreach (var chunk in chunks)
+            {
+                var vertexes = chunk.Value.GetVertexes();
+                var values = vertexes.Keys.ToList();
+                for (int i = 0; i < values.Count; i++)
+                {
+                    if (vertexes[values[i]].Count == 0)
+                    {
+                        vertexes.Remove(values[i]);
+                    }
+                }
+            }
+            
+
+            return data;
+        }
+
         private bool DoIntersect(Node<T> p1, Node<T> q1, Node<T> p2, Node<T> q2)
         {
             Vec3 p1Pos = p1.GetContent.GetPosition();
