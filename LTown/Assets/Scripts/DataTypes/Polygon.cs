@@ -7,13 +7,17 @@ using DataTypes.Map;
 
 namespace DataTypes
 {
+    public enum PlotType
+    {
+        Housing = 0, Park, Market
+    }
     public class Polygon<T> where T : ILocatable
     {
         public List<Node<T>> Points { get; }
 
         public Vec3 CenterPoint { get; private set; }
 
-        public HashSet<Polygon<T>> SubPolygons;
+        public PlotType PlotType;
 
         public int Length => Points.Count;
 
@@ -21,7 +25,6 @@ namespace DataTypes
         {
             this.CenterPoint = new Vec3(0, 0, 0);
             this.Points = new List<Node<T>>();
-            this.SubPolygons = new HashSet<Polygon<T>>();
         }
 
         public Polygon(Polygon<T> polygon)
@@ -95,7 +98,17 @@ namespace DataTypes
                 return false;
             }
 
-            return new HashSet<Node<T>>(Points).SetEquals(item.Points);
+            return CenterPoint.Equals(item.CenterPoint);
+        }
+
+        protected bool Equals(Polygon<T> other)
+        {
+            return Equals(CenterPoint, other.CenterPoint);
+        }
+
+        public override int GetHashCode()
+        {
+            return CenterPoint.GetHashCode();
         }
 
         public override string ToString()

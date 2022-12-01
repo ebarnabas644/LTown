@@ -5,6 +5,7 @@ using System.Linq;
 using ConvertLayer;
 using DataTypes;
 using DataTypes.Map;
+using Layers.BuildingLayer;
 using Layers.PlotLayer;
 using Layers.RoadLayer.PostProcessing;
 using RoadLayer.Generators;
@@ -23,6 +24,8 @@ namespace BuilderLayer
 
     [SerializeField]
     public GameObject roadBuilder;
+    [SerializeField] 
+    public GameObject buildingBuilder;
     [SerializeField]
     public string axiom;
     [SerializeField]
@@ -110,10 +113,13 @@ namespace BuilderLayer
 
         Debug.Log("Drawing plots:");
         test.Start();
-        DrawPlots(subPlots);
+        DrawPlots(plots, Color.black, 0.09f);
+        DrawPlots(subPlots, Color.grey, 0.1f);
         test.Stop();
         Debug.Log("Plot drawing time: "+test.Elapsed.ToString(@"m\:ss\.ff"));
         test.Reset();
+        
+        GenerateBuildings(subPlots);
         
         //PlotTester(plots);
         Debug.Log(_lSystem.GetAxiom);
@@ -202,7 +208,7 @@ namespace BuilderLayer
         return plots;
     }
 
-    private void DrawPlots<T>(HashSet<Polygon<T>> plots) where T : ILocatable
+    private void DrawPlots<T>(HashSet<Polygon<T>> plots, Color color, float yOffset) where T : ILocatable
     {
         List<Vector2> vertices2D = new List<Vector2>();
         List<Vector3> vertices3D = new List<Vector3>();
@@ -250,17 +256,23 @@ namespace BuilderLayer
                 var renderer = plotGameObject.AddComponent<MeshRenderer>();
                 renderer.shadowCastingMode = ShadowCastingMode.Off;
                 renderer.receiveShadows = false;
-                renderer.material.color = Color.gray;
+                renderer.material.color = color;
                 filter.mesh = mesh;
                 plotGameObject.transform.SetParent(plotPivotPoint.transform);
                 //plotPivotPoint.transform.Rotate(Vector3.up, -120);
 
-                plotPivotPoint.transform.localScale = new Vector3(0.9f, 0.1f * 0.9f, 0.9f);
+                plotPivotPoint.transform.localScale = new Vector3(0.9f, yOffset * 0.9f, 0.9f);
             }
             counter++;
             vertices2D.Clear();
             vertices3D.Clear();
         }
+    }
+
+    public void GenerateBuildings(HashSet<Polygon<Unit>> subPlots)
+    {
+        BuildingGenerator generator = new BuildingGenerator(subPlots, buildingBuilder);
+        generator.Start();
     }
 
     private bool IsClockwisePolygon<T>(Polygon<T> polygon) where T : ILocatable

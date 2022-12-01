@@ -74,37 +74,15 @@ namespace Layers.PlotLayer
 
             foreach (var edge in polygonEdges)
             {
-                /*if (middlePoint.DistanceFrom(edge.MiddlePoint()) >
-                    middlePoint.DistanceFrom(furthestEdge.MiddlePoint()))
-                {
-                    furthestEdge = edge;
-                }*/
                 if (!edge.Equals(longestEdge) && IsIntersecting(longestEdge.Start, longestEdge.End, edge.Start, edge.End))
                 {
                     furthestEdge = edge;
                     intersectionCounter++;
                 } 
             }
-            
-            //if (intersectionCounter == 0)
-            //{
-                ;
-                //polygon.GetLongestEdge();
-           // }
-            
-            //foreach (var edge in polygonEdges)
-            //{
-                /*if (middlePoint.DistanceFrom(edge.MiddlePoint()) >
-                    middlePoint.DistanceFrom(furthestEdge.MiddlePoint()))
-                {
-                    furthestEdge = edge;
-                }*/
-                //if (!edge.Equals(longestEdge) && IsIntersecting(longestEdge.Start, longestEdge.End, edge.Start, edge.End))
-                //{
-                    //furthestEdge = edge;
-                    //intersectionCounter++;
-                //} 
-            //}
+
+            ;
+            var longest2 = polygon.GetLongestEdge();
 
 
             var randomSeed = rnd.NextDouble() * 0.3 + 0.3;

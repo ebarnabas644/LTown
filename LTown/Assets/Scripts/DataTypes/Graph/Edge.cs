@@ -11,11 +11,14 @@ namespace DataTypes.Graph
         public Node<T> Start { get; private set; }
         public Node<T> End { get; private set; }
 
+        public float[] LineEquation;
+
         public Edge(Node<T> start, Node<T> end)
         {
             this.Start = start;
             this.End = end;
             this.id = counter++;
+            CalculateLineEquation();
         }
 
         public int GetId
@@ -72,6 +75,16 @@ namespace DataTypes.Graph
             var startPos = Start.GetContent.GetPosition();
             var endPos = End.GetContent.GetPosition();
             return (startPos + endPos) / 2;
+        }
+
+        private void CalculateLineEquation()
+        {
+            var a = Start.GetContent.GetPosition();
+            var b = End.GetContent.GetPosition();
+
+            Vec3 vector = b - a;
+
+            LineEquation = new float[] { vector.X, vector.Z, vector.X * a.X + vector.Z * a.Z };
         }
 
         public Tuple<Vec3, Vec3> CalculateNormal()

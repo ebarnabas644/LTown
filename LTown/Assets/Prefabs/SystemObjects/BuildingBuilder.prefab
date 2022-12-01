@@ -1,0 +1,65 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &7236793137938245397
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4276975300050437412}
+  - component: {fileID: 1607858002037124101}
+  m_Layer: 0
+  m_Name: BuildingBuilder
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4276975300050437412
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7236793137938245397}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -178.78563, y: 17.895878, z: -164.82729}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1607858002037124101
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7236793137938245397}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c7ce6f605cb34850b841c0e032b2edb2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  houseChance: 0.5
+  houseTypes:
+  - {fileID: 7274006608661370056, guid: 9746979f59e694feab90f89d54d783b0, type: 3}
+  - {fileID: 315445012725575869, guid: f56f01b115c934b64989066fa476eca6, type: 3}
+  houseProperties:
+  - {fileID: 11400000, guid: 2a2de6feddbc7094c93412429d13f234, type: 2}
+  - {fileID: 11400000, guid: de5a827b70b8711499de6d8bbd192fcb, type: 2}
+  parkChance: 0.3
+  parkTypes:
+  - {fileID: 8495513324701328381, guid: 6cb72a3a9142647be8a73b9b0658c5b7, type: 3}
+  - {fileID: 5720404016215849147, guid: 3dd5ac78e5f8a442c94ffa793d1b7ff1, type: 3}
+  parkProperties:
+  - {fileID: 11400000, guid: 3b6bf43372d50a840b152554c1a1f183, type: 2}
+  - {fileID: 11400000, guid: 6e418af306baaa34fa23e1a6d35969b2, type: 2}
+  marketChance: 0.2
+  marketTypes:
+  - {fileID: 1208338212056041311, guid: 3ef7289946b204a5793aa0a6014e4dc6, type: 3}
+  marketProperties:
+  - {fileID: 11400000, guid: 18ce6a368ae5d764094d141e5fef873b, type: 2}
