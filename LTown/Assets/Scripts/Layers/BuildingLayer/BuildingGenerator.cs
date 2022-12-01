@@ -44,8 +44,76 @@ namespace Layers.BuildingLayer
         {
             foreach (var plot in subPlots)
             {
+                switch (plot.PlotType)
+                {
+                    case PlotType.Housing:
+                        FillHousingPlot(plot);
+                        break;
+                    case PlotType.Market:
+                        FillMarketPlot(plot);
+                        break;
+                    case PlotType.Park:
+                        FillParkPlot(plot, Random.Range(5, 15));
+                        break;
+                }
+            }
+        }
+
+        private void FillHousingPlot(Polygon<Unit> plot)
+        {
+            var counter = 0;
+            var boundingBox = BoundingBox(plot);
+            var success = false;
+            Vec3 randomPos = new Vec3(0, 0, 0);
+            do
+            {
+                randomPos = new Vec3(
+                    Random.Range(boundingBox.Item1.X, boundingBox.Item2.X), 0,
+                    Random.Range(boundingBox.Item1.Z, boundingBox.Item2.Z));
+                if (counter == 9) randomPos = plot.CenterPoint;
+                counter++;
+                var maxRadius = DistanceOfClosestEdgeFromPointInPolygon(randomPos, plot);
+                success = false;
+                if (IsPointInPolygon(randomPos, plot))
+                {
+                    success = builder.BuildBuilding(randomPos, plot.PlotType,
+                        DistanceOfClosestEdgeFromPointInPolygon(randomPos, plot), "Building on plot: " + plot.Id);
+                }
+            } while (!success && counter < 10);
+        }
+        
+        private void FillMarketPlot(Polygon<Unit> plot)
+        {
+            var counter = 0;
+            var boundingBox = BoundingBox(plot);
+            var success = false;
+            Vec3 randomPos = new Vec3(0, 0, 0);
+            do
+            {
+                randomPos = new Vec3(
+                    Random.Range(boundingBox.Item1.X, boundingBox.Item2.X), 0,
+                    Random.Range(boundingBox.Item1.Z, boundingBox.Item2.Z));
+                if (counter == 9) randomPos = plot.CenterPoint;
+                counter++;
+                var maxRadius = DistanceOfClosestEdgeFromPointInPolygon(randomPos, plot);
+                success = false;
+                if (IsPointInPolygon(randomPos, plot))
+                {
+                    success = builder.BuildBuilding(randomPos, plot.PlotType,
+                        DistanceOfClosestEdgeFromPointInPolygon(randomPos, plot), "Building on plot: " + plot.Id);
+                }
+            } while (!success && counter < 10);
+        }
+        
+        private void FillParkPlot(Polygon<Unit> plot, int numberOfBuilding)
+        {
+            var successfulBuild = 0;
+            var numberOfFails = 0;
+            while (successfulBuild < numberOfBuilding && numberOfFails < 5)
+            {
                 var counter = 0;
                 var boundingBox = BoundingBox(plot);
+                var success = false;
                 Vec3 randomPos = new Vec3(0, 0, 0);
                 do
                 {
@@ -53,11 +121,22 @@ namespace Layers.BuildingLayer
                         Random.Range(boundingBox.Item1.X, boundingBox.Item2.X), 0,
                         Random.Range(boundingBox.Item1.Z, boundingBox.Item2.Z));
                     counter++;
-                } while (!IsPointInPolygon(randomPos, plot) && counter < 10);
+                    var maxRadius = DistanceOfClosestEdgeFromPointInPolygon(randomPos, plot);
+                    success = false;
+                    if (IsPointInPolygon(randomPos, plot))
+                    {
+                        success = builder.BuildBuilding(randomPos, plot.PlotType,
+                            DistanceOfClosestEdgeFromPointInPolygon(randomPos, plot), "Building on plot: " + plot.Id);
+                    }
+                } while (!success && counter < 10);
 
-                if (counter < 10)
+                if (counter >= 10)
                 {
-                    builder.BuildBuilding(randomPos, plot.PlotType);
+                    numberOfFails++;
+                }
+                else
+                {
+                    successfulBuild++;
                 }
             }
         }
@@ -127,6 +206,28 @@ namespace Layers.BuildingLayer
             }
 
             return new Tuple<Vec3, Vec3>(new Vec3(minX, 0, minZ), new Vec3(maxX, 0, maxZ));
+        }
+
+        private float DistanceOfClosestEdgeFromPointInPolygon(Vec3 target, Polygon<Unit> polygon)
+        {
+            float min = float.MaxValue;
+            foreach (var edge in polygon.GetPolygonEdges())
+            {
+                var distance = DistanceFromPointToEdge(target, edge);
+                if (min > distance)
+                {
+                    min = distance;
+                }
+            }
+            return min;
+        }
+
+        private float DistanceFromPointToEdge(Vec3 a, Edge<Unit> edge)
+        {
+            var p1 = edge.Start.GetContent.Position;
+            var p2 = edge.End.GetContent.Position;
+            return (float)(Math.Abs((p2.X - p1.X) * (p1.Z - a.Z) - (p1.X - a.X) * (p2.Z - p1.Z)) /
+                           Math.Sqrt(Math.Pow((p2.X - p1.X), 2) + Math.Pow((p2.Z - p1.Z), 2)));
         }
         
         private bool IsIntersecting(Vec3 a, Edge<Unit> edge)

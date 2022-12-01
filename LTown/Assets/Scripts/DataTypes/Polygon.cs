@@ -9,15 +9,17 @@ namespace DataTypes
 {
     public enum PlotType
     {
-        Housing = 0, Park, Market
+        Housing = 0, Park, Market, Default
     }
     public class Polygon<T> where T : ILocatable
     {
+        private static int counter = 0;
+        public int Id;
         public List<Node<T>> Points { get; }
 
         public Vec3 CenterPoint { get; private set; }
 
-        public PlotType PlotType;
+        public PlotType PlotType = PlotType.Default;
 
         public int Length => Points.Count;
 
@@ -25,12 +27,16 @@ namespace DataTypes
         {
             this.CenterPoint = new Vec3(0, 0, 0);
             this.Points = new List<Node<T>>();
+            this.Id = counter;
+            counter++;
         }
 
         public Polygon(Polygon<T> polygon)
         {
             this.Points = new List<Node<T>>(polygon.Points);
             CalculateCenterPoint();
+            this.Id = counter;
+            counter++;
         }
 
         public void CalculateCenterPoint()

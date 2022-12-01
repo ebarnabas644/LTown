@@ -164,7 +164,7 @@ PrefabInstance:
       objectReference: {fileID: 657576245970461261}
     - target: {fileID: 3302799774685575198, guid: b0f514b784312534cb2c9da0e07c0ae5, type: 3}
       propertyPath: numberOfIterations
-      value: 4
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 6431449506011534340, guid: b0f514b784312534cb2c9da0e07c0ae5, type: 3}
       propertyPath: m_RootOrder
@@ -685,70 +685,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1607858002037124101, guid: 6d0b9684b305ad242928c9bb178a5c89, type: 3}
-      propertyPath: parkTypes.Array.size
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 1607858002037124101, guid: 6d0b9684b305ad242928c9bb178a5c89, type: 3}
-      propertyPath: houseTypes.Array.size
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 1607858002037124101, guid: 6d0b9684b305ad242928c9bb178a5c89, type: 3}
-      propertyPath: marketTypes.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1607858002037124101, guid: 6d0b9684b305ad242928c9bb178a5c89, type: 3}
-      propertyPath: parkTypes.Array.data[0]
-      value: 
-      objectReference: {fileID: 8495513324701328381, guid: 6cb72a3a9142647be8a73b9b0658c5b7, type: 3}
-    - target: {fileID: 1607858002037124101, guid: 6d0b9684b305ad242928c9bb178a5c89, type: 3}
-      propertyPath: parkTypes.Array.data[1]
-      value: 
-      objectReference: {fileID: 5720404016215849147, guid: 3dd5ac78e5f8a442c94ffa793d1b7ff1, type: 3}
-    - target: {fileID: 1607858002037124101, guid: 6d0b9684b305ad242928c9bb178a5c89, type: 3}
-      propertyPath: houseTypes.Array.data[0]
-      value: 
-      objectReference: {fileID: 7274006608661370056, guid: 9746979f59e694feab90f89d54d783b0, type: 3}
-    - target: {fileID: 1607858002037124101, guid: 6d0b9684b305ad242928c9bb178a5c89, type: 3}
-      propertyPath: houseTypes.Array.data[1]
-      value: 
-      objectReference: {fileID: 315445012725575869, guid: f56f01b115c934b64989066fa476eca6, type: 3}
-    - target: {fileID: 1607858002037124101, guid: 6d0b9684b305ad242928c9bb178a5c89, type: 3}
-      propertyPath: marketTypes.Array.data[0]
-      value: 
-      objectReference: {fileID: 1208338212056041311, guid: 3ef7289946b204a5793aa0a6014e4dc6, type: 3}
-    - target: {fileID: 1607858002037124101, guid: 6d0b9684b305ad242928c9bb178a5c89, type: 3}
-      propertyPath: parkProperties.Array.size
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 1607858002037124101, guid: 6d0b9684b305ad242928c9bb178a5c89, type: 3}
-      propertyPath: houseProperties.Array.size
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 1607858002037124101, guid: 6d0b9684b305ad242928c9bb178a5c89, type: 3}
-      propertyPath: marketProperties.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1607858002037124101, guid: 6d0b9684b305ad242928c9bb178a5c89, type: 3}
-      propertyPath: parkProperties.Array.data[0]
-      value: 
-      objectReference: {fileID: 11400000, guid: 3b6bf43372d50a840b152554c1a1f183, type: 2}
-    - target: {fileID: 1607858002037124101, guid: 6d0b9684b305ad242928c9bb178a5c89, type: 3}
-      propertyPath: parkProperties.Array.data[1]
-      value: 
-      objectReference: {fileID: 11400000, guid: 6e418af306baaa34fa23e1a6d35969b2, type: 2}
-    - target: {fileID: 1607858002037124101, guid: 6d0b9684b305ad242928c9bb178a5c89, type: 3}
-      propertyPath: houseProperties.Array.data[0]
-      value: 
-      objectReference: {fileID: 11400000, guid: 2a2de6feddbc7094c93412429d13f234, type: 2}
-    - target: {fileID: 1607858002037124101, guid: 6d0b9684b305ad242928c9bb178a5c89, type: 3}
-      propertyPath: houseProperties.Array.data[1]
-      value: 
-      objectReference: {fileID: 11400000, guid: de5a827b70b8711499de6d8bbd192fcb, type: 2}
-    - target: {fileID: 1607858002037124101, guid: 6d0b9684b305ad242928c9bb178a5c89, type: 3}
-      propertyPath: marketProperties.Array.data[0]
-      value: 
-      objectReference: {fileID: 11400000, guid: 18ce6a368ae5d764094d141e5fef873b, type: 2}
     - target: {fileID: 4276975300050437412, guid: 6d0b9684b305ad242928c9bb178a5c89, type: 3}
       propertyPath: m_RootOrder
       value: 6

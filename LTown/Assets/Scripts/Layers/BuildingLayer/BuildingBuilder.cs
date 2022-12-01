@@ -30,7 +30,10 @@ namespace Layers.BuildingLayer
         [SerializeField] 
         public List<BuildingProperty> marketProperties;
 
-        public GameObject BuildBuilding(Vec3 pos, PlotType plotType, int id = -1)
+        [SerializeField] 
+        public float buildingScale = 0.25f;
+
+        public bool BuildBuilding(Vec3 pos, PlotType plotType, float maxRadius, string name, int id = -1)
         {
             GameObject building = new GameObject();
             if (id == -1)
@@ -51,20 +54,24 @@ namespace Layers.BuildingLayer
             switch (plotType)
             {
                 case PlotType.Housing:
+                    if (houseProperties[id].sizeRadius * buildingScale >= maxRadius) return false;
                     building = Instantiate(houseTypes[id]);
                     break;
                 case PlotType.Market:
+                    if (marketProperties[id].sizeRadius * buildingScale >= maxRadius) return false;
                     building = Instantiate(marketTypes[id]);
                     break;
                 case PlotType.Park:
+                    if (parkProperties[id].sizeRadius * buildingScale >= maxRadius) return false;
                     building = Instantiate(parkTypes[id]);
                     break;
             }
             //house.transform.rotation = Quaternion.Euler(0f, angle, 0f);
+            building.name = name;
             building.transform.position = new Vector3(pos.X, pos.Y, pos.Z);
-            building.transform.localScale = new Vector3(0.25f, 0.25f, 0.25f);
+            building.transform.localScale = new Vector3(buildingScale, buildingScale, buildingScale);
 
-            return building;
+            return true;
         }
     }
 }

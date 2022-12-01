@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd01191a6ba973b41b43ff959771816e, type: 3}
   m_Name: house_big_property
   m_EditorClassIdentifier: 
-  sizeRadius: 0
+  sizeRadius: 7

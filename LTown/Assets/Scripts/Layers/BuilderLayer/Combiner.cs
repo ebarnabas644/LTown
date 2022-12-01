@@ -111,15 +111,15 @@ namespace BuilderLayer
         Debug.Log("Gameobject conversion time: "+test.Elapsed.ToString(@"m\:ss\.ff"));
         test.Reset();
 
+        GenerateBuildings(subPlots);
+        
         Debug.Log("Drawing plots:");
         test.Start();
-        DrawPlots(plots, Color.black, 0.09f);
-        DrawPlots(subPlots, Color.grey, 0.1f);
+        DrawPlots(plots, 0.09f);
+        DrawPlots(subPlots, 0.1f);
         test.Stop();
         Debug.Log("Plot drawing time: "+test.Elapsed.ToString(@"m\:ss\.ff"));
         test.Reset();
-        
-        GenerateBuildings(subPlots);
         
         //PlotTester(plots);
         Debug.Log(_lSystem.GetAxiom);
@@ -208,7 +208,7 @@ namespace BuilderLayer
         return plots;
     }
 
-    private void DrawPlots<T>(HashSet<Polygon<T>> plots, Color color, float yOffset) where T : ILocatable
+    private void DrawPlots<T>(HashSet<Polygon<T>> plots, float yOffset) where T : ILocatable
     {
         List<Vector2> vertices2D = new List<Vector2>();
         List<Vector3> vertices3D = new List<Vector3>();
@@ -250,18 +250,34 @@ namespace BuilderLayer
                 var centerPoint = plot.CenterPoint;
                 var pivotPointPosition = new Vector3(centerPoint.X, centerPoint.Y, centerPoint.Z);
                 plotPivotPoint.transform.position = pivotPointPosition;
-                plotPivotPoint.name = "Plot " + counter;
+                plotPivotPoint.name = "Plot " + plot.Id;
                 plotGameObject.name = "Plot plane";
                 MeshFilter filter = plotGameObject.AddComponent<MeshFilter>();
                 var renderer = plotGameObject.AddComponent<MeshRenderer>();
                 renderer.shadowCastingMode = ShadowCastingMode.Off;
                 renderer.receiveShadows = false;
-                renderer.material.color = color;
-                filter.mesh = mesh;
                 plotGameObject.transform.SetParent(plotPivotPoint.transform);
                 //plotPivotPoint.transform.Rotate(Vector3.up, -120);
-
+                
                 plotPivotPoint.transform.localScale = new Vector3(0.9f, yOffset * 0.9f, 0.9f);
+                switch (plot.PlotType)
+                {
+                    case PlotType.Housing:
+                        renderer.material.color = new Color(0, 0.31f, 0);
+                        break;
+                    case PlotType.Park:
+                        renderer.material.color = new Color(0, 0.45f, 0);
+                        break;
+                    case PlotType.Market:
+                        renderer.material.color = new Color(0.23f, 0.23f, 0.23f);
+                        break;
+                    case PlotType.Default:
+                        renderer.material.color = Color.black;
+                        plotPivotPoint.transform.localScale = new Vector3(1f, yOffset * 0.9f, 1f);
+                        break;
+                }
+                filter.mesh = mesh;
+                
             }
             counter++;
             vertices2D.Clear();

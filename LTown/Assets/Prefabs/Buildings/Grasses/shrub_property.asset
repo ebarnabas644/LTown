@@ -10,6 +10,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fd01191a6ba973b41b43ff959771816e, type: 3}
-  m_Name: supermarket_property
+  m_Name: shrub_property
   m_EditorClassIdentifier: 
-  sizeRadius: 8
+  sizeRadius: 1
