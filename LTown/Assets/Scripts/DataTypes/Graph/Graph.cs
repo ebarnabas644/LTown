@@ -119,7 +119,7 @@ namespace DataTypes.Graph
             {
                 foreach (var edge in vertex.Value)
                 {
-                    if ((edge.Start == edgeForTest.Start && edge.End == edgeForTest.End) || (edge.Start == edgeForTest.End && edge.End == edgeForTest.Start))
+                    if ((edge.Start.Equals(edgeForTest.Start) && edge.End.Equals(edgeForTest.End)) || (edge.Start.Equals(edgeForTest.End) && edge.End.Equals(edgeForTest.Start)))
                     {
                         return true;
                     }

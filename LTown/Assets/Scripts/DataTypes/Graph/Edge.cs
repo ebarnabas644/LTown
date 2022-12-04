@@ -31,7 +31,12 @@ namespace DataTypes.Graph
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(Start, End);
+            if (Start.GetId < End.GetId)
+            {
+                return HashCode.Combine(Start, End);
+            }
+            
+            return HashCode.Combine(End, Start);
         }
 
         public T Content
