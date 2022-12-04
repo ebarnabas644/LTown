@@ -72,12 +72,12 @@ namespace Layers.BuildingLayer
                     Random.Range(boundingBox.Item1.Z, boundingBox.Item2.Z));
                 if (counter == 9) randomPos = plot.CenterPoint;
                 counter++;
-                var maxRadius = DistanceOfClosestEdgeFromPointInPolygon(randomPos, plot);
+                var closest = DistanceOfClosestEdgeFromPointInPolygon(randomPos, plot);
                 success = false;
                 if (IsPointInPolygon(randomPos, plot))
                 {
                     success = builder.BuildBuilding(randomPos, plot.PlotType,
-                        DistanceOfClosestEdgeFromPointInPolygon(randomPos, plot), "Building on plot: " + plot.Id);
+                        closest.Item1, "Building on plot: " + plot.Id, closest.Item2);
                 }
             } while (!success && counter < 10);
         }
@@ -95,12 +95,12 @@ namespace Layers.BuildingLayer
                     Random.Range(boundingBox.Item1.Z, boundingBox.Item2.Z));
                 if (counter == 9) randomPos = plot.CenterPoint;
                 counter++;
-                var maxRadius = DistanceOfClosestEdgeFromPointInPolygon(randomPos, plot);
+                var closest = DistanceOfClosestEdgeFromPointInPolygon(randomPos, plot);
                 success = false;
                 if (IsPointInPolygon(randomPos, plot))
                 {
                     success = builder.BuildBuilding(randomPos, plot.PlotType,
-                        DistanceOfClosestEdgeFromPointInPolygon(randomPos, plot), "Building on plot: " + plot.Id);
+                        closest.Item1, "Building on plot: " + plot.Id, closest.Item2);
                 }
             } while (!success && counter < 10);
         }
@@ -121,12 +121,12 @@ namespace Layers.BuildingLayer
                         Random.Range(boundingBox.Item1.X, boundingBox.Item2.X), 0,
                         Random.Range(boundingBox.Item1.Z, boundingBox.Item2.Z));
                     counter++;
-                    var maxRadius = DistanceOfClosestEdgeFromPointInPolygon(randomPos, plot);
+                    var closest = DistanceOfClosestEdgeFromPointInPolygon(randomPos, plot);
                     success = false;
                     if (IsPointInPolygon(randomPos, plot))
                     {
                         success = builder.BuildBuilding(randomPos, plot.PlotType,
-                            DistanceOfClosestEdgeFromPointInPolygon(randomPos, plot), "Building on plot: " + plot.Id);
+                            closest.Item1, "Building on plot: " + plot.Id, Random.Range(0, 360));
                     }
                 } while (!success && counter < 10);
 
@@ -140,27 +140,6 @@ namespace Layers.BuildingLayer
                 }
             }
         }
-
-        /*private float CalculateMinimumDistanceFromEdges(Vec3 target, Polygon<Unit> plot)
-        {
-            
-        }*/
-
-        /*private float CalculateDistanceFromEdge(Vec3 target, Edge<Unit> edge)
-        {
-            var edgeNormal = new Vec3(edge.LineEquation[1], 0, -edge.LineEquation[0]);
-
-            var matrix = Matrix<float>.Build.DenseOfArray(new float[,]
-            {
-                { edge.LineEquation[0], edge.LineEquation[1] },
-                { edgeNormal.X, edgeNormal.Z }
-            });
-
-            var right = Vector<float>.Build.Dense(new float[]
-            {
-                { edge.LineEquation[2], }
-            });
-        }*/
 
         private bool IsPointInPolygon(Vec3 target, Polygon<Unit> plot)
         {
@@ -208,18 +187,26 @@ namespace Layers.BuildingLayer
             return new Tuple<Vec3, Vec3>(new Vec3(minX, 0, minZ), new Vec3(maxX, 0, maxZ));
         }
 
-        private float DistanceOfClosestEdgeFromPointInPolygon(Vec3 target, Polygon<Unit> polygon)
+        private Tuple<float, float> DistanceOfClosestEdgeFromPointInPolygon(Vec3 target, Polygon<Unit> polygon)
         {
             float min = float.MaxValue;
-            foreach (var edge in polygon.GetPolygonEdges())
+            var edges = polygon.GetPolygonEdges();
+            var closest = edges[0];
+            foreach (var edge in edges)
             {
                 var distance = DistanceFromPointToEdge(target, edge);
                 if (min > distance)
                 {
+                    closest = edge;
                     min = distance;
                 }
             }
-            return min;
+
+            var vector = closest.End.GetContent.Position - closest.Start.GetContent.Position;
+            var slope = vector.Z / vector.X;
+            var angle = (float)(Math.Atan(slope) * (180/Math.PI));
+            
+            return new Tuple<float, float>(min, angle);
         }
 
         private float DistanceFromPointToEdge(Vec3 a, Edge<Unit> edge)

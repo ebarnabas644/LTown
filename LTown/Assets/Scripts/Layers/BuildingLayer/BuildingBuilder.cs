@@ -33,7 +33,7 @@ namespace Layers.BuildingLayer
         [SerializeField] 
         public float buildingScale = 0.25f;
 
-        public bool BuildBuilding(Vec3 pos, PlotType plotType, float maxRadius, string name, int id = -1)
+        public bool BuildBuilding(Vec3 pos, PlotType plotType, float maxRadius, string name, float angle, int id = -1)
         {
             GameObject building = new GameObject();
             if (id == -1)
@@ -66,7 +66,7 @@ namespace Layers.BuildingLayer
                     building = Instantiate(parkTypes[id]);
                     break;
             }
-            //house.transform.rotation = Quaternion.Euler(0f, angle, 0f);
+            building.transform.rotation = Quaternion.Euler(0f, angle, 0f);
             building.name = name;
             building.transform.position = new Vector3(pos.X, pos.Y, pos.Z);
             building.transform.localScale = new Vector3(buildingScale, buildingScale, buildingScale);
