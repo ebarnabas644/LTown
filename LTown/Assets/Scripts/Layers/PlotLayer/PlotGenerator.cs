@@ -33,16 +33,51 @@ namespace Layers.PlotLayer
                 var smallestPlot = new Polygon<T>();
                 foreach (var plot in foundedPlots)
                 {
+                    var points = plot.Points;
+                    var cycle = true;
+                    for (int i = 0; i < points.Count; i++)
+                    {
+                        var pointEdges = vertexes[points[i]];
+                        var nextPoint = points[(i + 1) % points.Count];
+                        var previousPoint = points[mod((i - 1), points.Count)];
+                        foreach (var edge in pointEdges)
+                        {
+                            var endPoint = edge.Start.Equals(points[i]) ? edge.End : edge.Start;
+                            if (points.Contains(endPoint) && !(endPoint.Equals(nextPoint) || endPoint.Equals(previousPoint)))
+                            {
+                                cycle = false;
+                                break;
+                            }
+                        }
+
+                        if (!cycle)
+                        {
+                            break;
+                        }
+                    }
+
+                    if (cycle)
+                    {
+                        plots.Add(plot);
+                    }
+                    
+                    /*var numberOfEdges = plot.GetPolygonEdges().Count;
+                    var numberOfPolygon = plot.Points.Count;*/
+                    /*
                     if (smallestPlot.Length == 0 || (smallestPlot.Length > plot.Length))
                     {
                         smallestPlot = plot;
-                    }
+                    }*/
+                    /*if (numberOfEdges == numberOfPolygon)
+                    {
+                        plots.Add(plot);
+                    }*/
                 }
-
+                /*
                 if (smallestPlot.Length > 2)
                 {
                     plots.Add(smallestPlot);
-                }
+                }*/
                 foundedPlots.Clear();
             }
 
@@ -76,6 +111,10 @@ namespace Layers.PlotLayer
             var dx = point1.GetPosition().X - point2.GetPosition().X;
             var dz = point1.GetPosition().Z - point2.GetPosition().Z;
             return dx * dx + dz * dz;
+        }
+        
+        private int mod(int x, int m) {
+            return (x%m + m)%m;
         }
     }
 }
