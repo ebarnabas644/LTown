@@ -272,7 +272,7 @@ namespace BuilderLayer
                         renderer.material.color = new Color(0.23f, 0.23f, 0.23f);
                         break;
                     case PlotType.Default:
-                        renderer.material.color = Color.black;
+                        renderer.material.color = Color.gray;
                         plotPivotPoint.transform.localScale = new Vector3(1f, yOffset * 0.9f, 1f);
                         break;
                 }
