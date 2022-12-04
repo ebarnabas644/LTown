@@ -140,7 +140,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3302799774685575198, guid: b0f514b784312534cb2c9da0e07c0ae5, type: 3}
       propertyPath: snapRange
-      value: 6
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 3302799774685575198, guid: b0f514b784312534cb2c9da0e07c0ae5, type: 3}
       propertyPath: randomAngle
@@ -685,6 +685,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1607858002037124101, guid: 6d0b9684b305ad242928c9bb178a5c89, type: 3}
+      propertyPath: houseChance
+      value: 0.65
+      objectReference: {fileID: 0}
+    - target: {fileID: 1607858002037124101, guid: 6d0b9684b305ad242928c9bb178a5c89, type: 3}
+      propertyPath: marketChance
+      value: 0.05
+      objectReference: {fileID: 0}
     - target: {fileID: 4276975300050437412, guid: 6d0b9684b305ad242928c9bb178a5c89, type: 3}
       propertyPath: m_RootOrder
       value: 6
