@@ -203,8 +203,7 @@ namespace Layers.BuildingLayer
             }
 
             var vector = closest.End.GetContent.Position - closest.Start.GetContent.Position;
-            var slope = vector.Z / vector.X;
-            var angle = (float)(Math.Atan(slope) * (180/Math.PI));
+            var angle = (float)(Math.Atan2(vector.Z, vector.X) * (180/Math.PI));
             
             return new Tuple<float, float>(min, angle);
         }

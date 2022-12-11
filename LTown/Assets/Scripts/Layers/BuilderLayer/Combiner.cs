@@ -9,6 +9,7 @@ using Layers.BuildingLayer;
 using Layers.PlotLayer;
 using Layers.RoadLayer.PostProcessing;
 using RoadLayer.Generators;
+using UnityEditor.Graphs;
 using UnityEngine;
 using UnityEngine.Rendering;
 using Debug = UnityEngine.Debug;
@@ -111,15 +112,23 @@ namespace BuilderLayer
         Debug.Log("Gameobject conversion time: "+test.Elapsed.ToString(@"m\:ss\.ff"));
         test.Reset();
 
+        Debug.Log("Generate buildings:");
+        test.Start();
         GenerateBuildings(subPlots);
+        test.Stop();
+        Debug.Log("Building generate time: "+test.Elapsed.ToString(@"m\:ss\.ff"));
+        test.Reset();
         
         Debug.Log("Drawing plots:");
         test.Start();
-        DrawPlots(plots, 0.09f);
-        DrawPlots(subPlots, 0.1f);
+        DrawPlots(plots, 0.09f, Color.black);
+        DrawPlots(subPlots, 0.1f, Color.grey);
         test.Stop();
         Debug.Log("Plot drawing time: "+test.Elapsed.ToString(@"m\:ss\.ff"));
         test.Reset();
+        
+        var numberOfObjects = FindObjectsOfType(typeof(GameObject)).Count(obj => obj.name != "New Game Object");
+        Debug.Log("Number of objects: "+numberOfObjects);
         
         //PlotTester(plots);
         Debug.Log(_lSystem.GetAxiom);
@@ -208,7 +217,7 @@ namespace BuilderLayer
         return plots;
     }
 
-    private void DrawPlots<T>(HashSet<Polygon<T>> plots, float yOffset) where T : ILocatable
+    private void DrawPlots<T>(HashSet<Polygon<T>> plots, float yOffset, Color defaultColor) where T : ILocatable
     {
         List<Vector2> vertices2D = new List<Vector2>();
         List<Vector3> vertices3D = new List<Vector3>();
@@ -272,7 +281,7 @@ namespace BuilderLayer
                         renderer.material.color = new Color(0.23f, 0.23f, 0.23f);
                         break;
                     case PlotType.Default:
-                        renderer.material.color = Color.gray;
+                        renderer.material.color = defaultColor;
                         plotPivotPoint.transform.localScale = new Vector3(1f, yOffset * 0.9f, 1f);
                         break;
                 }

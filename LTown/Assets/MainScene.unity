@@ -136,7 +136,7 @@ PrefabInstance:
       objectReference: {fileID: 871136146}
     - target: {fileID: 3302799774685575198, guid: b0f514b784312534cb2c9da0e07c0ae5, type: 3}
       propertyPath: chunkSize
-      value: 50
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 3302799774685575198, guid: b0f514b784312534cb2c9da0e07c0ae5, type: 3}
       propertyPath: snapRange
@@ -164,7 +164,7 @@ PrefabInstance:
       objectReference: {fileID: 657576245970461261}
     - target: {fileID: 3302799774685575198, guid: b0f514b784312534cb2c9da0e07c0ae5, type: 3}
       propertyPath: numberOfIterations
-      value: 6
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 6431449506011534340, guid: b0f514b784312534cb2c9da0e07c0ae5, type: 3}
       propertyPath: m_RootOrder
@@ -693,6 +693,22 @@ PrefabInstance:
       propertyPath: marketChance
       value: 0.05
       objectReference: {fileID: 0}
+    - target: {fileID: 1607858002037124101, guid: 6d0b9684b305ad242928c9bb178a5c89, type: 3}
+      propertyPath: parkTypes.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1607858002037124101, guid: 6d0b9684b305ad242928c9bb178a5c89, type: 3}
+      propertyPath: parkTypes.Array.data[4]
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1607858002037124101, guid: 6d0b9684b305ad242928c9bb178a5c89, type: 3}
+      propertyPath: parkProperties.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1607858002037124101, guid: 6d0b9684b305ad242928c9bb178a5c89, type: 3}
+      propertyPath: parkProperties.Array.data[4]
+      value: 
+      objectReference: {fileID: 11400000, guid: 0233efde493e2454dba86079e230b89f, type: 2}
     - target: {fileID: 4276975300050437412, guid: 6d0b9684b305ad242928c9bb178a5c89, type: 3}
       propertyPath: m_RootOrder
       value: 6

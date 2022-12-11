@@ -36,7 +36,7 @@ namespace Layers.PlotLayer
             var d = new Node<Unit>(new Unit(18, 0, 12, 0));
             var b = new Node<Unit>(new Unit(10, 0, 2, 0));
             var c = new Node<Unit>(new Unit(18, 0, 4, 0));
-            var result = IsIntersecting(e, d, b, c);
+            var result = IsRayIntersecting(e, d, b, c);
             return subPlots;
         }
 
@@ -70,24 +70,17 @@ namespace Layers.PlotLayer
             var middlePoint = longestEdge.MiddlePoint();
             var furthestEdge = longestEdge;
             var polygonEdges = polygon.GetPolygonEdges();
-            var intersectionCounter = 0;
 
             foreach (var edge in polygonEdges)
             {
-                if (!edge.Equals(longestEdge) && IsIntersecting(longestEdge.Start, longestEdge.End, edge.Start, edge.End))
+                if (!edge.Equals(longestEdge) && IsRayIntersecting(longestEdge.Start, longestEdge.End, edge.Start, edge.End))
                 {
                     furthestEdge = edge;
-                    intersectionCounter++;
                 } 
             }
 
-            ;
-            var longest2 = polygon.GetLongestEdge();
-
-
             var randomSeed = rnd.NextDouble() * 0.3 + 0.3;
             var furthestMiddlePoint = furthestEdge.Start.GetContent.Position * (float)randomSeed + furthestEdge.End.GetContent.Position * (1 - (float)randomSeed);
-            //var furthestMiddlePoint = furthestEdge.MiddlePoint();
 
             var dividerStartNode = new Node<Unit>(new Unit(middlePoint.X, middlePoint.Y, middlePoint.Z, 0));
             var dividerEndNode =
@@ -124,7 +117,7 @@ namespace Layers.PlotLayer
             return new Tuple<Polygon<Unit>, Polygon<Unit>>(plot1, plot2);
         }
 
-        private bool IsIntersecting(Node<Unit> A, Node<Unit> B, Node<Unit> C, Node<Unit> D)
+        private bool IsRayIntersecting(Node<Unit> A, Node<Unit> B, Node<Unit> C, Node<Unit> D)
         {
             var a = A.GetContent.Position;
             var b = B.GetContent.Position;

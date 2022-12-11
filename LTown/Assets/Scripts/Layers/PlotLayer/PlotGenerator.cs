@@ -30,7 +30,6 @@ namespace Layers.PlotLayer
                 var searchResult = new Polygon<T>();
                 searchResult.AddPoint(vertex.Key);
                 Search(vertex.Key, vertex.Key, searchResult, 0, 5);
-                var smallestPlot = new Polygon<T>();
                 foreach (var plot in foundedPlots)
                 {
                     var points = plot.Points;
@@ -61,23 +60,7 @@ namespace Layers.PlotLayer
                         plots.Add(plot);
                     }
                     
-                    /*var numberOfEdges = plot.GetPolygonEdges().Count;
-                    var numberOfPolygon = plot.Points.Count;*/
-                    /*
-                    if (smallestPlot.Length == 0 || (smallestPlot.Length > plot.Length))
-                    {
-                        smallestPlot = plot;
-                    }*/
-                    /*if (numberOfEdges == numberOfPolygon)
-                    {
-                        plots.Add(plot);
-                    }*/
                 }
-                /*
-                if (smallestPlot.Length > 2)
-                {
-                    plots.Add(smallestPlot);
-                }*/
                 foundedPlots.Clear();
             }
 
